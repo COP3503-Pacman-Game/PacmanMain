@@ -86,36 +86,27 @@ void Logic() {
 
 	if (direction.compare("UP") == 0) {
 		cout << direction << endl;
-		if (movePlayer(pacman, pacman.locationX, pacman.locationY++) == false) {
+		if (movePlayer(pacman, pacman.locationX--, pacman.locationY) == false) {
 			cout << "Need a way to continue in same direction" << endl;
 		}
 	}
 	else if (direction.compare("LEFT") == 0) {
 		cout << direction << endl;
-		GameBoard[pacman.locationX][pacman.locationY] = EMPTY; //current position becomes empty
-		pacman.locationY--;
-		GameBoard[pacman.locationX][pacman.locationY] = PACMAN;
-		//if (movePlayer(pacman, pacman.locationX, pacman.locationY++, GameBoard) == false) {
-		//	cout << "Need a way to continue in same direction" << endl;
-		//}
+		if (movePlayer(pacman, pacman.locationX, pacman.locationY++) == false) {
+			cout << "Need a way to continue in same direction" << endl;
+		}
 	}
 	else if (direction.compare("DOWN") == 0) {
 		cout << direction << endl;
-		GameBoard[pacman.locationX][pacman.locationY] = EMPTY; //current position becomes empty
-		pacman.locationX++;
-		GameBoard[pacman.locationX][pacman.locationY] = PACMAN;
-		//if (movePlayer(pacman, &pacman.locationX, pacman.locationY++, GameBoard) == false) {
-		//	cout << "Need a way to continue in same direction" << endl;
-		//}
+		if (movePlayer(pacman, pacman.locationX++, pacman.locationY) == false) {
+			cout << "Need a way to continue in same direction" << endl;
+		}
 	}
 	else if (direction.compare("RIGHT") == 0) {
 		cout << direction << endl;
-		GameBoard[pacman.locationX][pacman.locationY] = EMPTY; //current position becomes empty
-		pacman.locationY++;
-		GameBoard[pacman.locationX][pacman.locationY] = PACMAN;
-		//if (movePlayer(pacman, pacman.locationX, pacman.locationY++, GameBoard) == false) {
-		//	cout << "Need a way to continue in same direction" << endl;
-		//}
+		if (movePlayer(pacman, pacman.locationX, pacman.locationY--) == false) {
+			cout << "Need a way to continue in same direction" << endl;
+		}
 	}
 	else if (direction.compare("NEW GAME") == 0) {
 		cout << direction << endl;

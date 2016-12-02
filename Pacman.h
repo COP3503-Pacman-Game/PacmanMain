@@ -131,9 +131,9 @@ bool movePlayer(Player player, int x, int y)
 	
 	
 	*/
-	GameBoard[player.locationX][player.locationX] = EMPTY; //current position becomes empty
+	GameBoard[player.locationX][player.locationY] = EMPTY; //current position becomes empty
 	player.locationX = x; player.locationY = y;
-	GameBoard[player.locationX][player.locationX] = PACMAN; //desired position becomes player
+	GameBoard[player.locationX][player.locationY] = PACMAN; //desired position becomes player
 	
 	return true;
 }
