@@ -1,19 +1,35 @@
 #include "Pacman.h"
 using namespace std;
 
+bool startOver;
 bool gameOver;
 bool validInput;
 char input;
-string direction;
+int direction;
 Player pacman;
 
-
+Ghost Blinky;
+Ghost Pinky;
+Ghost Inky;
+Ghost Clyde;
 
 void Setup() {
+	system("clear");
 	gameOver = false;
+	Blinky.locationX = 10;
+	Blinky.locationY = 9;
+	Pinky.locationX = 9;
+	Pinky.locationY = 9;
+	Inky.locationX = 10;
+	Inky.locationY = 8;
+	Clyde.locationX = 10;
+	Clyde.locationY = 10;
+	pacman.locationRow = 12;
+	pacman.locationCol = 9;
 }
 
 void Draw() {
+	cout << "SCORE: " << pacman.score << endl;
 	for (int i = 0; i < 22; i++) {
 		for (int j = 0; j < 19; j++) {
 			if (GameBoard[i][j] == WALL) {
@@ -35,7 +51,7 @@ void Draw() {
 
 void Input() {
 	validInput = false;
-	direction = " ";
+	direction = HOLD;
 
 	while (validInput == false) {
 		cin >> input;
@@ -48,34 +64,35 @@ void Input() {
 			switch (input) {
 			case 'n':
 				validInput = true;
-				direction = "NEW GAME";
+				direction = NEW_GAME;
 				break;
 			case 'p':
-				direction = "PAUSE";
+				direction = PAUSE;
 				validInput = true;
 				break;
 			case 'q':
-				direction = "QUIT";
+				direction = QUIT;
 				validInput = true;
 				break;
 			case 'w':
-				direction = "UP";
+				direction = UP;
 				validInput = true;
 				break;
 			case 'a':
-				direction = "LEFT";
+				direction = LEFT;
 				validInput = true;
 				break;
 			case 's':
-				direction = "DOWN";
+				direction = DOWN;
 				validInput = true;
 				break;
 			case 'd':
-				direction = "RIGHT";
+				direction = RIGHT;
 				validInput = true;
 				break;
 			default:
 				validInput = false;
+				direction = HOLD;
 				break;
 			}
 		}
@@ -83,40 +100,50 @@ void Input() {
 }
 
 void Logic() {
+	int tempX = pacman.locationRow;
+	int tempY = pacman.locationCol;
 
-	if (direction.compare("UP") == 0) {
-		cout << direction << endl;
-		if (movePlayer(pacman, pacman.locationX--, pacman.locationY) == false) {
+	switch (direction) {
+	case UP:
+		if (movePlayer(pacman, --tempX, tempY) == true) {
+			pacman.locationRow--;
+		}
+		else {
 			cout << "Need a way to continue in same direction" << endl;
 		}
-	}
-	else if (direction.compare("LEFT") == 0) {
-		cout << direction << endl;
-		if (movePlayer(pacman, pacman.locationX, pacman.locationY++) == false) {
+		break;
+	case LEFT:
+		if (movePlayer(pacman, tempX, --tempY) == true) {
+			pacman.locationCol--;
+		}
+		else {
 			cout << "Need a way to continue in same direction" << endl;
 		}
-	}
-	else if (direction.compare("DOWN") == 0) {
-		cout << direction << endl;
-		if (movePlayer(pacman, pacman.locationX++, pacman.locationY) == false) {
+		break;
+	case DOWN:
+		if (movePlayer(pacman, ++tempX, tempY) == true) {
+			pacman.locationRow++;
+		}
+		else {
 			cout << "Need a way to continue in same direction" << endl;
 		}
-	}
-	else if (direction.compare("RIGHT") == 0) {
-		cout << direction << endl;
-		if (movePlayer(pacman, pacman.locationX, pacman.locationY--) == false) {
+		break;
+	case RIGHT:
+		if (movePlayer(pacman, tempX, ++tempY) == true) {
+			pacman.locationCol++;
+		}
+		else {
 			cout << "Need a way to continue in same direction" << endl;
 		}
-	}
-	else if (direction.compare("NEW GAME") == 0) {
-		cout << direction << endl;
+		break;
+	case NEW_GAME:
 		gameOver = true;
-	}
-	else if (direction.compare("QUIT") == 0) {
-		cout << direction << endl;
+		startOver = true;
+		break;
+	case QUIT:
 		gameOver = true;
-	}
-	else if (direction.compare("PAUSE") == 0) {
+		break;
+	case PAUSE:
 		validInput = false;
 		cout << direction << endl;
 		cout << "Press r to RESUME" << endl;
@@ -140,21 +167,24 @@ void Logic() {
 				}
 			}
 		}
-	}
-	else if (direction.compare(" ") == 0) {
-		cout << direction << endl;
+		break;
+	case HOLD:
 		cout << "Something went wrong" << endl;
+		break;
 	}
 }
 
 int main()
 {
-	Setup();
-	while (gameOver == false)
-	{
-		Draw();
-		Input();
-		Logic();
-	}
+	do {
+		Setup();
+		while (gameOver == false)
+		{
+			Draw();
+			Input();
+			Logic();
+		}
+	} while (startOver == true);
+
 	return 0;
 }
