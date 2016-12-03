@@ -7,14 +7,14 @@ bool startOver;
 bool gameOver;
 bool validInput;
 char input;
-int direction;
+int direction=-1;
 
 Player pacman;
 
 
 struct Ghost
 {
-	int speed, pointValue, locationX, locationY;
+	int speed, pointValue, locationX, locationY, style, dir;
 	bool isEdible;
 	double timeIsEdible;
 	Ghost()
@@ -22,23 +22,90 @@ struct Ghost
 		isEdible = false;
 		pointValue = 100;
 	}
+
+bool inColRow(){
+	for (int i=locationX;i<22-locationX;i++){
+		if (GameBoard[i][locationY] == PACMAN)
+			return true;
+		else if(GameBoard[i][locationY] == WALL)
+			break;
+	}
+	for (int i=locationX;i>=0;i--){
+		if (GameBoard[i][locationY] == PACMAN)
+			return true;
+		else if(GameBoard[i][locationY] == WALL)
+			break;
+	}
+	for (int i=locationY;i<19-locationY;i++){
+		if (GameBoard[locationX][i] == PACMAN)
+			return true;
+		else if (GameBoard[locationX][i] == WALL)
+			break;
+	}
+	for (int i=locationY;i>=0;i--){
+		if (GameBoard[locationX][i] == PACMAN)
+			return true;
+		else if (GameBoard[locationX][i] == WALL)
+			break;
+	}
+		return false;
+}
+
  void	*mover(int endx, int endy){
-		int move = solve(locationX, locationY, endx, endy, GameBoard);
-		//left
+ 		int board[22][19];
+ 		for (int i=0;i<22;i++)
+ 			for (int j=0;j<19;j++)
+ 				board[i][j]=GameBoard[i][j];
+ 			vector<int> ways;
+ 			ways.clear();
+if (dir!=RIGHT && locationY-1>=0 && GameBoard[locationX][locationY-1]!=WALL){
+	ways.push_back(LEFT);
+}
+if (dir!=LEFT && locationY+1<19 && GameBoard[locationX][locationY+1]!=WALL){
+	ways.push_back(RIGHT);
+}
+if (dir!=DOWN && locationX-1>=0 && GameBoard[locationX-1][locationY]!=WALL){
+	ways.push_back(UP);
+}
+if (dir!=UP && locationX+1<22 && GameBoard[locationX+1][locationY]!=WALL){
+	ways.push_back(DOWN);
+}
+int move;
+srand(time(NULL));
+	if (ways.empty()){
+		move=(dir+2)%4;
+	}else
+		move = ways.at(rand()%ways.size());
+ 			if (style  == 0){
+ 				if (sqrt(pow(pacman.locationRow - locationX,2) + pow(pacman.locationCol - locationY,2) ) <10)
+ 					move = solve(locationX, locationY, endx, endy, board);
+ 				else if (inColRow())
+ 					move = solve(locationX, locationY, endx, endy, board);
+ 			}else if (style == 1){
+ 				if (inColRow() )
+ 					move = solve(locationX, locationY, endx, endy, board);
+ 			}
+		
+		//cout<<move<<endl;
+		//up
 		if(move==0){
+			dir=0;
 			locationX--;
 		}
-		//up
-		else if(move==1){
-			locationY--;
-		}
 		//right
-		else if(move==2){
-			locationX++;
+		else if(move==1){
+			dir=1;
+			locationY++;
 		}
 		//down
+		else if(move==2){
+			dir=2;
+			locationX++;
+		}
+		//left
 		else if(move==3){
-			locationY++;
+			dir=3;
+			locationY--;
 		}
 	}
 
@@ -53,22 +120,30 @@ void Setup() {
 	gameOver = false;
 	Blinky.locationX = 1;
 	Blinky.locationY = 1;
+	Blinky.style = 0;
+	Blinky.dir=0;
 	Pinky.locationX = 1;
 	Pinky.locationY = 3;
+	Pinky.style = 1;
+	Pinky.dir=0;
 	Inky.locationX = 20;
 	Inky.locationY = 1;
+	Inky.style = 1;
+	Inky.dir=0;
 	Clyde.locationX = 10;
 	Clyde.locationY = 10;
+	Clyde.style = 2;
+	Clyde.dir=0;
 	pacman.locationRow = 16;
 	pacman.locationCol = 9;
-
+/*
 	GameBoard[Blinky.locationX][Blinky.locationY] = BLINKY;
 	GameBoard[Pinky.locationX][Pinky.locationY] = PINKY;
 	GameBoard[Inky.locationX][Inky.locationY] = INKY;
 	GameBoard[Clyde.locationX][Clyde.locationY] = CLYDE;
 
-
-
+*/
+GameBoard[pacman.locationRow][pacman.locationCol] = PACMAN;
 
 	for (int i = 0; i < 22; i++) {
 		for (int j = 0; j < 19; j++) {
@@ -146,6 +221,7 @@ void Draw() {
 	}
 		cout<<endl;
 	}
+	cout<<Pinky.locationX-30<<" "<<Pinky.locationY<<" "<<GameBoard[Pinky.locationX-30][Pinky.locationY]<<endl;
 }
 
 
@@ -189,12 +265,14 @@ void Input() {
 
 		}
 	}
-	cout<<pacman.locationRow<<" "<<pacman.locationCol;
+	//cout<<pacman.locationRow<<" "<<pacman.locationCol;
+	if(direction != -1){
 	Blinky.mover(pacman.locationCol, pacman.locationRow);
 	Pinky.mover(pacman.locationCol, pacman.locationRow);
 	Inky.mover(pacman.locationCol, pacman.locationRow);
 	Clyde.mover(pacman.locationCol, pacman.locationRow);
-	Sleep(500);
+}
+	Sleep(400);
 
 	
 }
@@ -285,10 +363,11 @@ int main()
 		Setup();
 		while (gameOver == false)
 		{
-	system("cls");
-			Draw();
+			
 			Input();
 			Logic();
+			system("cls");
+			Draw();
 		}
 	} while (startOver == true);
 

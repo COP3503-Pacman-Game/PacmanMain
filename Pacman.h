@@ -6,15 +6,18 @@
 #include <string>
 #include <stdlib.h>
 #include <queue>
-
+#include "Windows.h"
+#include "conio.h"
+#include <cmath>
+#include <ctime>
 using namespace std;
 
 
 //Gamestates
-const int RIGHT = 200;
-const int LEFT = 201;
-const int UP = 202;
-const int DOWN = 203;
+const int RIGHT = 1;
+const int LEFT = 3;
+const int UP = 0;
+const int DOWN = 2;
 const int NEW_GAME = 204;
 const int QUIT = 205;
 const int PAUSE = 206;
@@ -55,7 +58,7 @@ int GameBoard[22][19] = {
 	{ WALL  ,WALL  ,WALL  ,WALL  ,EMPTY ,WALL  ,EMPTY ,WALL  ,WALL  ,WALL  ,WALL  ,WALL  ,EMPTY ,WALL  ,EMPTY ,WALL  ,WALL  ,WALL  ,WALL },
 	{ WALL  ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,WALL  ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,WALL },
 	{ WALL  ,EMPTY ,WALL  ,WALL  ,EMPTY ,WALL  ,WALL  ,WALL  ,EMPTY ,WALL  ,EMPTY ,WALL  ,WALL  ,WALL  ,EMPTY ,WALL  ,WALL  ,EMPTY ,WALL },
-	{ WALL  ,EMPTY ,EMPTY ,WALL  ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,PACMAN ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,WALL  ,EMPTY ,EMPTY ,WALL },
+	{ WALL  ,EMPTY ,EMPTY ,WALL  ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,WALL  ,EMPTY ,EMPTY ,WALL },
 	{ WALL  ,WALL  ,EMPTY ,WALL  ,EMPTY ,WALL  ,EMPTY ,WALL  ,WALL  ,WALL  ,WALL  ,WALL  ,EMPTY ,WALL  ,EMPTY ,WALL  ,EMPTY ,WALL  ,WALL },
 	{ WALL  ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,WALL  ,EMPTY ,EMPTY ,EMPTY ,WALL  ,EMPTY ,EMPTY ,EMPTY ,WALL  ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,WALL },
 	{ WALL  ,EMPTY ,WALL  ,WALL  ,WALL  ,WALL  ,WALL  ,WALL  ,EMPTY ,WALL  ,EMPTY ,WALL  ,WALL  ,WALL  ,WALL  ,WALL  ,WALL  ,EMPTY ,WALL },
@@ -77,6 +80,8 @@ struct Player
 		lives = 3;
 	}
 };
+
+
 
 
 
@@ -145,13 +150,43 @@ bool movePlayer(Player player, int x, int y)
 	}
 
 
-	int solve(int startx, int starty, int endx, int endy, int board[22][19]) {
+	int solve(int starty, int startx, int endx, int endy, int boardold[22][19]) {
+		int board[22][19];
 
 
-	    for (int i=0;i<19;i++)
-	       for (int j=0; j<22;j++)
-	           if (board[j][i] > 0 )
-	               board[j][i] =1;
+//1,1 3,1 1,20
+		int temp=starty;
+		starty=18-startx;
+		startx=temp;
+
+//9,16 16,9
+		temp=endy;
+		endy=18-endx;
+		endx=temp;
+
+		
+/*
+		int board [19][22];
+
+for(int i=0; i<19; i++) {
+    for(int j=0; j<22; j++) {
+        board[i][j] = boardold[22-1-j][i];
+    }
+}
+*/
+
+
+
+	    for (int i=0;i<22;i++)
+	       for (int j=0; j<19;j++)
+	           if (boardold[i][j] > 0 )
+	               board[i][j] =1;
+	           else
+	           		board[i][j]=0;
+
+
+
+
 
 
 	    queue<int> Xloc;
@@ -173,14 +208,18 @@ bool movePlayer(Player player, int x, int y)
 	    Xloc.push(startx);
 	    Yloc.push(starty);
 	    board[startx][starty]=2;
-	    for (int i=0;i<22;i++){
-	       for (int j=0; j<19;j++)
-	           cout<<board[i][j]<<" ";
-	    	cout<<endl;
-	    }
-
-
-cout<<"got to path out"<<endl;
+	     //board[endx][endy]=9;
+	    /*
+	    for(int j=0; j<19; j++) {
+    		for(int i=0; i<22; i++) {
+    			if (i==endx && j==endy){
+    				cout<<"9 ";
+    			}else
+    			cout<<board[i][j]<<" ";
+    		}
+			cout<<endl;
+		}
+	*/
 	    while(!Xloc.empty()){
 	        bool nott = true;
 
@@ -227,7 +266,6 @@ cout<<"got to path out"<<endl;
 	                //cout<<Y+1<<endl;
 	                Xloc.push(X);
 	                Yloc.push(Y+1);
-
 	            }
 	            nott = false;
 	        }
@@ -249,14 +287,26 @@ cout<<"got to path out"<<endl;
 
 	    }
 	    /*
-	    for (i=0;i<sizex;i++){
-	        for (j=0;j<sizey;j++)
-	            cout<<board[j][i]<<" ";
-	        cout<<endl;
-	    }
-	    */
+cout<<endl;
+	    for(int j=0; j<19; j++) {
+    		for(int i=0; i<22; i++) {
+    			if (board[i][j]<10){
+    				cout<< board[i][j]<<"  ";
+    			}else
+    			cout<<board[i][j]<<" ";
+    		}
+			cout<<endl;
+		}
+	  cout<<endl;
 	  
-	    cout<<"got to destroy"<<endl;
+	  while (!Xdes.empty()){
+	  		int XD = Xdes.front();
+	        Xdes.pop();
+	        int YD = Ydes.front();
+	        Ydes.pop();
+	        cout<<XD<<" "<<YD<<" "<<board[XD][YD]<<endl;
+	  }
+	  */
 	    while (!Xdes.empty()){
 	        int XD = Xdes.front();
 	        Xdes.pop();
@@ -279,88 +329,114 @@ cout<<"got to path out"<<endl;
 	        if (YD+1<sizey && board[XD][YD+1]>board[XD][YD] ){
 	            kill=false;
 	        }
-	        if (kill){
-	            board[XD][YD]=0;
-	            if (XD-1>=0 && board[XD-1][YD]!=0){
-	                Xdes.push(XD-1);
-	                Ydes.push(YD);
-	            }
-	            if (YD-1>=0 && board[XD][YD-1]!=0){
-	                Xdes.push(XD);
-	                Ydes.push(YD-1);
-	            }
-	            if (XD+1<sizex && board[XD+1][YD]!=0){
-	                Xdes.push(XD+1);
-	                Ydes.push(YD);
-	            }
-	            if (YD+1<sizey && board[XD][YD+1]!=0){
-	                Xdes.push(XD);
-	                Ydes.push(YD+1);
-	            }
+	        if (!(XD==endx && YD==endy) ){
+	        	if (kill){
+	        	//cout<<XD<<" "<<YD<<" "<<board[XD][YD]<<endl;
+	            	board[XD][YD]=0;
+	            	
+	            	if (XD-1>=0 && board[XD-1][YD]!=0){
+	                	Xdes.push(XD-1);
+	                	Ydes.push(YD);
+	            	}
+	           	 	if (YD-1>=0 && board[XD][YD-1]!=0){
+	                	Xdes.push(XD);
+	                	Ydes.push(YD-1);
+	            	}
+	            	if (XD+1<sizex && board[XD+1][YD]!=0){
+	                	Xdes.push(XD+1);
+	            	    Ydes.push(YD);
+	            	}
+	            	if (YD+1<sizey && board[XD][YD+1]!=0){
+	                	Xdes.push(XD);
+	                	Ydes.push(YD+1);
+	            	}
+				}
 	        }
+	        /*
+	        for(int j=0; j<19; j++) {
+    			for(int i=0; i<22; i++) {
+    				if (board[i][j]<10){
+    				cout<< board[i][j]<<"  ";
+    				}else
+    					cout<<board[i][j]<<" ";
+    			}
+    			cout<<endl;
+			}
+			Sleep(250);
+			system("cls");
+		
 	    }
-	      for (int i=0;i<22;++i){
-	    	for (int j=0;j<19;++j)
-	    		cout<<board[i][j]<<" ";
-	    	cout<<endl;
+	    	    for(int j=0; j<19; j++) {
+    		for(int i=0; i<22; i++) {
+    			if (board[i][j]<10){
+    				cout<< board[i][j]<<"  ";
+    			}else
+    			cout<<board[i][j]<<" ";
+    		}
+			cout<<endl;
+*/
+
 		}
-	    cout<<"got to real path"<<endl;
+
 	    vector <int>moves ;
 	    int curx=startx;
 	    int cury=starty;
 	    //left=0
 	    if (curx-1>=0 && board[curx-1][cury]>board[curx][cury] ){
 	        curx-=1;
-	        //cout<<"left"<<endl;
+	       // cout<<"left";
 	        return 0;
 	    }
 	    //up=1
 	    else if (cury-1>=0 && board[curx][cury-1]>board[curx][cury] ){
 	        cury-=1;
-	        //cout<<"up"<<endl;
+	       // cout<<"up";
 	        return 1;
 	    }
 	    //right=2
 	    else if (curx+1<sizex && board[curx+1][cury]>board[curx][cury] ){
 	        curx+=1;
-	        //cout<<"right"<<endl;
+	       // cout<<"right";
 	        return 2;
 	    }
 	    //down=3
 	    else if (cury+1<sizey && board[curx][cury+1]>board[curx][cury] ){
 	        cury+=1;
-	        //cout<<"down"<<endl;
+	       // cout<<"down";
 	        return 3;
 	    }
-	    cout<<"got to real path2"<<endl;
+	    else
+	    {
+	    	return -1;
+	    }
 	    while(curx!=endx || cury!=endy){
 	        //left=0
-	        cout<< curx <<" "<<cury<<endl;
+	        //cout<< curx <<" "<<cury<<endl;
 	        if (curx-1>=0 && board[curx-1][cury]>board[curx][cury] ){
 	            board[curx][cury]=-1;
 	            curx-=1;
-	            //cout<<"left"<<endl;
+	          //  cout<<"left";
 	            moves.push_back(0);
 	        }
 	        //up=1
 	        else if (cury-1>=0 && board[curx][cury-1]>board[curx][cury] ){
 	            board[curx][cury]=-1;
 	            cury-=1;
-	            //cout<<"up"<<endl;
+	            //cout<<"up";
 	            moves.push_back(1);
 	        }
 	        //right=2
 	        else if (curx+1<sizex && board[curx+1][cury]>board[curx][cury] ){
 	            board[curx][cury]=-1;
 	            curx+=1;
-	            //cout<<"right"<<endl;
+	           // cout<<"right";
 	            moves.push_back(2);
 	        }
 	        //down=3
 	        else if (cury+1<sizey && board[curx][cury+1]>board[curx][cury] ){
 	            board[curx][cury]=-1;
 	            cury+=1;
-	            //cout<<"down"<<endl;
+	           // cout<<"down";
 	            moves.push_back(3);
 	        }else{
 	            //cout<<"error in path"<<endl;
