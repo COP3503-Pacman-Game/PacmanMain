@@ -1,35 +1,30 @@
-//
-//  pathfind.cpp
-//  maze solve picture
-//
-//  Created by ParkerDawe on 12/2/16.
-//  Copyright © 2016 Parker Dawe. All rights reserved.
-//
-
 #include "pathfind.hpp"
 #include <iostream>
 #include <vector>
 #include <queue>
 using namespace std;
 
-vector<int> solve(int argc, const char * argv[]) {
+vector<int> solve(int startx, int starty, int endx, int endy, int board[22][19]) {
+    
+    
+    
     
     queue<int> Xloc;
     queue<int> Yloc;
     queue<int> Xdes;
     queue<int> Ydes;
     //vector<int> moves;
-    int sizex=10;
-    int sizey=10;
-    int startx=0;
-    int starty=0;
-    int endx=sizex-1;
-    int endy=sizey-1;
+    int sizex=22;
+    int sizey=19;
+    //int startx=0;
+    //int starty=0;
+    //int endx=sizex-1;
+    //int endy=sizey-1;
     int i;
     int j;
     int X;
     int Y;
-    int board[sizex][sizey];
+    //int board[sizex][sizey];
     for (i=0;i<sizex;i++)
         for (j=0;j<sizey;j++)
             board[i][j]=1;
