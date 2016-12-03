@@ -1,14 +1,27 @@
+//FIXED SCORE
+//FIXED PAUSE
+//FIXED NEW GAME
+//ADDED FRUIT
+//ADDED SPECIAL DOTS
+//FIXED WRAP OMFG
+//FIXED Flicker
+
+
 #include "Pacman.h"
+#include <conio.h>
+#include <Windows.h>
 using namespace std;
 
-bool startOver;
-bool gameOver;
+
+
+
+bool gameOver = false;
+bool leavegame = false;
 bool validInput;
 char input;
 int direction;
 
 Player pacman;
-
 
 struct Ghost
 {
@@ -48,7 +61,7 @@ Ghost Inky;
 Ghost Clyde;
 
 void Setup() {
-	gameOver = false;
+	score = 0;
 	Blinky.locationX = 1;
 	Blinky.locationY = 1;
 	Pinky.locationX = 1;
@@ -60,13 +73,12 @@ void Setup() {
 	pacman.locationRow = 16;
 	pacman.locationCol = 9;
 
+	GameBoard[16][9] = PACMAN;
+
 	GameBoard[Blinky.locationX][Blinky.locationY] = BLINKY;
 	GameBoard[Pinky.locationX][Pinky.locationY] = PINKY;
 	GameBoard[Inky.locationX][Inky.locationY] = INKY;
 	GameBoard[Clyde.locationX][Clyde.locationY] = CLYDE;
-
-
-
 
 	for (int i = 0; i < 22; i++) {
 		for (int j = 0; j < 19; j++) {
@@ -83,11 +95,14 @@ void Setup() {
 			}
 		}
 	}
+
+	generateFruit();
+	
 }
 
 void Draw() {
-	system("clear");
-	cout << "SCORE: " << pacman.score << endl;
+
+	cout << "SCORE: " << score << endl;
 	for (int i = 0; i < 22; i++) {
 		for (int j = 0; j < 19; j++) {
 		if((Blinky.locationX == i && Blinky.locationY == j)
@@ -103,7 +118,10 @@ void Draw() {
 			else if (GameBoard[i][j] == DOT) {
 				cout << (char)46 <<(char)46;
 			}
-			else if (GameBoard[i][j] == EMPTY || GameBoard[i][j] == WRAPL || GameBoard[i][j] == WRAPR) {
+			else if (GameBoard[i][j] == SPECIAL_DOT){
+				cout << "@@";
+			}
+			else if (GameBoard[i][j] == EMPTY) {
 				cout << "  ";
 			}
 			/*else if (GameBoard[i][j] == PINKY || GameBoard[i][j] == INKY || GameBoard[i][j] == BLINKY || GameBoard[i][j] == CLYDE) {
@@ -111,6 +129,9 @@ void Draw() {
 			}*/
 			else if (GameBoard[i][j] == PACMAN) {
 				cout << "XX";
+			}
+			else if (GameBoard[i][j] == FRUIT) {
+				cout << "FF";
 			}
 		}
 	}
@@ -131,6 +152,9 @@ void Draw() {
 			else if (GameBoard[i][j] == DOT) {
 				cout << (char)46 <<(char)46;
 			}
+			else if (GameBoard[i][j] == SPECIAL_DOT){
+				cout << "@@";
+			}
 			else if (GameBoard[i][j] == EMPTY || GameBoard[i][j] == WRAPL || GameBoard[i][j] == WRAPR) {
 				cout << "  ";
 			}
@@ -140,31 +164,23 @@ void Draw() {
 			else if (GameBoard[i][j] == PACMAN) {
 				cout << "XX";
 			}
+			else if (GameBoard[i][j] == FRUIT) {
+				cout << "FF";
+			}
 		}
 	}
 		cout<<endl;
 	}
+
 }
 
 
 void Input() {
-
-
-	validInput = false;
-	direction = HOLD;
-
-	while (validInput == false) {
-		cin >> input;
-		if (cin.fail()) {
-			cin.clear();
-			cin.ignore(256, '\n');
-			bool validInput = false;
-		}
-		else {
-			switch (input) {
+	if (_kbhit()){
+			switch (_getch()) {
 			case 'n':
-				validInput = true;
 				direction = NEW_GAME;
+				validInput = true;
 				break;
 			case 'p':
 				direction = PAUSE;
@@ -196,8 +212,9 @@ void Input() {
 				break;
 			}
 		}
+		Sleep(100);
 	}
-}
+
 
 void Logic() {
 	int tempX = pacman.locationRow;
@@ -214,15 +231,20 @@ void Logic() {
 			//}
 		}
 		else {
-			cout << "Need a way to continue in same direction" << endl;
+			//cout << "Need a way to continue in same direction" << endl;
 		}
 		break;
 	case LEFT:
-		if (movePlayer(pacman, tempX, --tempY) == true) {
+		if (tempX == 10 && tempY == 0){
+			GameBoard[tempX][tempY] = EMPTY;
+			pacman.locationRow == 10;
+			pacman.locationCol = 18;
+		}
+		else if(movePlayer(pacman, tempX, --tempY) == true) {
 			pacman.locationCol--;
 		}
 		else {
-			cout << "Need a way to continue in same direction" << endl;
+			//cout << "Need a way to continue in same direction" << endl;
 		}
 		break;
 	case DOWN:
@@ -230,27 +252,30 @@ void Logic() {
 			pacman.locationRow++;
 		}
 		else {
-			cout << "Need a way to continue in same direction" << endl;
+			//cout << "Need a way to continue in same direction" << endl;
 		}
 		break;
 	case RIGHT:
-		if (movePlayer(pacman, tempX, ++tempY) == true) {
+		if (tempX == 10 && tempY == 18){
+			GameBoard[tempX][tempY] = EMPTY;
+			pacman.locationRow == 10;
+			pacman.locationCol = 0;
+		}
+		else if (movePlayer(pacman, tempX, ++tempY) == true) {
 			pacman.locationCol++;
 		}
 		else {
-			cout << "Need a way to continue in same direction" << endl;
+			//cout << "Need a way to continue in same direction" << endl;
 		}
 		break;
 	case NEW_GAME:
 		gameOver = true;
-		startOver = true;
 		break;
 	case QUIT:
 		gameOver = true;
 		break;
 	case PAUSE:
 		validInput = false;
-		cout << direction << endl;
 		cout << "Press r to RESUME" << endl;
 		while (validInput == false) {
 			cin >> input;
@@ -263,6 +288,7 @@ void Logic() {
 			else {
 				switch (input) {
 				case 'r':
+					direction = HOLD;
 					validInput = true;
 					cout << "RESUME" << endl;
 					break;
@@ -274,23 +300,47 @@ void Logic() {
 		}
 		break;
 	case HOLD:
-		cout << "Something went wrong" << endl;
+		//cout << "Something went wrong" << endl;
 		break;
 	}
 }
 
 int main()
 {
+	char input;
 	do {
 		Setup();
 		while (gameOver == false)
 		{
 
-			Draw();
 			Input();
 			Logic();
+			clearScreen();
+			Draw();
+			
+			
+			if (gameOver == true){
+				system("cls");
+				cout << "GAME OVER!" << endl;
+				Sleep(1000);
+				cout << "YOU SUCK" << endl;
+				Sleep(1000);
+			}
 		}
-	} while (startOver == true);
+		cout << endl;
+		cout << "Do you want to play another game?" << endl;
+		cout << "Press y to play again..." << endl;
+		cin >> input;
+		if (input == 'y') {
+			direction = HOLD;
+			gameOver = false;
+			GameBoard[pacman.locationRow][pacman.locationCol] = DOT;
+			Setup();
+			
+		}
+		else {
+			leavegame = true;
+		}
 
-	return 0;
+	} while (leavegame == false);
 }

@@ -6,9 +6,11 @@
 #include <string>
 #include <stdlib.h>
 #include <queue>
+#include <windows.h>
 
 using namespace std;
-
+int score;
+//bool gameOver;
 
 //Gamestates
 const int RIGHT = 200;
@@ -26,9 +28,7 @@ const int WALL = 0;
 const int EMPTY = 1;
 const int DOT = 2;
 const int SPECIAL_DOT = 3;
-const int CHERRY = 4;
-const int BANANA = 5;
-const int STRAWBERRY = 6;
+const int FRUIT = 6;
 const int BLINKY = 7;
 const int PINKY = 8;
 const int INKY = 9;
@@ -42,20 +42,20 @@ int GameBoard[22][19] = {
 	{ WALL  ,WALL  ,WALL  ,WALL  ,WALL  ,WALL  ,WALL  ,WALL  ,WALL  ,WALL  ,WALL  ,WALL  ,WALL  ,WALL  ,WALL  ,WALL  ,WALL  ,WALL  ,WALL },
 	{ WALL  ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,WALL  ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,WALL },
 	{ WALL  ,EMPTY ,WALL  ,WALL  ,EMPTY ,WALL  ,WALL  ,WALL  ,EMPTY ,WALL  ,EMPTY ,WALL  ,WALL  ,WALL  ,EMPTY ,WALL  ,WALL  ,EMPTY ,WALL },
-	{ WALL  ,EMPTY ,WALL  ,WALL  ,EMPTY ,WALL  ,WALL  ,WALL  ,EMPTY ,WALL  ,EMPTY ,WALL  ,WALL  ,WALL  ,EMPTY ,WALL  ,WALL  ,EMPTY ,WALL },
+	{ WALL  ,SPECIAL_DOT,WALL  ,WALL  ,EMPTY ,WALL  ,WALL  ,WALL  ,EMPTY ,WALL  ,EMPTY ,WALL  ,WALL  ,WALL  ,EMPTY ,WALL  ,WALL  ,SPECIAL_DOT ,WALL },
 	{ WALL  ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,WALL },
 	{ WALL  ,EMPTY ,WALL  ,WALL  ,EMPTY ,WALL  ,EMPTY ,WALL  ,WALL  ,WALL  ,WALL  ,WALL  ,EMPTY ,WALL  ,EMPTY ,WALL  ,WALL  ,EMPTY ,WALL },
 	{ WALL  ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,WALL  ,EMPTY ,EMPTY ,EMPTY ,WALL  ,EMPTY ,EMPTY ,EMPTY ,WALL  ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,WALL },
 	{ WALL  ,WALL  ,WALL  ,WALL  ,EMPTY ,WALL  ,WALL  ,WALL  ,EMPTY ,WALL  ,EMPTY ,WALL  ,WALL  ,WALL  ,EMPTY ,WALL  ,WALL  ,WALL  ,WALL },
 	{ EMPTY ,EMPTY ,EMPTY ,WALL  ,EMPTY ,WALL  ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,WALL  ,EMPTY ,WALL  ,EMPTY ,EMPTY ,EMPTY },
 	{ WALL  ,WALL  ,WALL  ,WALL  ,EMPTY ,WALL  ,EMPTY ,WALL  ,WALL  ,EMPTY/*PINKY*/ ,WALL  ,WALL  ,EMPTY ,WALL  ,EMPTY ,WALL  ,WALL  ,WALL  ,WALL },
-	{ WRAPL ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,WALL  ,EMPTY/*INKY*/  ,EMPTY/*BLINKY*/,EMPTY/*CLYDE*/ ,WALL  ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,WRAPR },
+	{ EMPTY ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,WALL  ,EMPTY/*INKY*/  ,EMPTY/*BLINKY*/,EMPTY/*CLYDE*/ ,WALL  ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,EMPTY },
 	{ WALL  ,WALL  ,WALL  ,WALL  ,EMPTY ,WALL  ,EMPTY ,WALL  ,WALL  ,WALL  ,WALL  ,WALL  ,EMPTY ,WALL  ,EMPTY ,WALL  ,WALL  ,WALL  ,WALL },
 	{ EMPTY ,EMPTY ,EMPTY ,WALL  ,EMPTY ,WALL  ,EMPTY ,EMPTY ,EMPTY, EMPTY ,EMPTY ,EMPTY ,EMPTY ,WALL  ,EMPTY ,WALL  ,EMPTY ,EMPTY ,EMPTY },
 	{ WALL  ,WALL  ,WALL  ,WALL  ,EMPTY ,WALL  ,EMPTY ,WALL  ,WALL  ,WALL  ,WALL  ,WALL  ,EMPTY ,WALL  ,EMPTY ,WALL  ,WALL  ,WALL  ,WALL },
 	{ WALL  ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,WALL  ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,WALL },
 	{ WALL  ,EMPTY ,WALL  ,WALL  ,EMPTY ,WALL  ,WALL  ,WALL  ,EMPTY ,WALL  ,EMPTY ,WALL  ,WALL  ,WALL  ,EMPTY ,WALL  ,WALL  ,EMPTY ,WALL },
-	{ WALL  ,EMPTY ,EMPTY ,WALL  ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,PACMAN ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,WALL  ,EMPTY ,EMPTY ,WALL },
+	{ WALL  ,SPECIAL_DOT,EMPTY ,WALL  ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,PACMAN ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,WALL  ,EMPTY ,SPECIAL_DOT,WALL },
 	{ WALL  ,WALL  ,EMPTY ,WALL  ,EMPTY ,WALL  ,EMPTY ,WALL  ,WALL  ,WALL  ,WALL  ,WALL  ,EMPTY ,WALL  ,EMPTY ,WALL  ,EMPTY ,WALL  ,WALL },
 	{ WALL  ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,WALL  ,EMPTY ,EMPTY ,EMPTY ,WALL  ,EMPTY ,EMPTY ,EMPTY ,WALL  ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,WALL },
 	{ WALL  ,EMPTY ,WALL  ,WALL  ,WALL  ,WALL  ,WALL  ,WALL  ,EMPTY ,WALL  ,EMPTY ,WALL  ,WALL  ,WALL  ,WALL  ,WALL  ,WALL  ,EMPTY ,WALL },
@@ -67,17 +67,33 @@ int GameBoard[22][19] = {
 
 struct Player
 {
-	int locationRow, locationCol, score, lives;
+	int locationRow, locationCol, lives;
 	double movementTimer;
 	Player()
 	{
 		locationRow = 16;
 		locationCol = 9;
-		score = 0;
-		lives = 3;
+		//lives = 3;
 	}
 };
 
+
+void generateFruit(){
+	bool validLoc= false;
+	while(validLoc == false){
+		int locFruitRow = rand() % 22;
+		int locFruitCol = rand() % 19;
+		int element = GameBoard[locFruitRow][locFruitCol];
+		if (element==WALL || element==PACMAN || element==INKY || element==PINKY || element==CLYDE  || element==BLINKY || element == SPECIAL_DOT){
+
+			validLoc = false;
+		}
+		else{
+			GameBoard[locFruitRow][locFruitCol] = FRUIT;
+			validLoc = true;
+		}
+	}
+}
 
 
 /*These are arbitrary values, BUT if we keep all
@@ -93,8 +109,8 @@ bool movePlayer(Player player, int x, int y)
 	//Reset WRAPR and WRAPL
 	//TEMPORARY- MAKE SURE TO CHANGE
 	//if (pacman.locationRow != 10 && (pacman.locationCol != 18 && pacman.locationCol != 19)) {
-		GameBoard[10][18] = WRAPR;
-		GameBoard[10][19] = WRAPL;
+		//GameBoard[10][18] = WRAPR;
+		//GameBoard[10][19] = WRAPL;
 	//}
 
 	int element = GameBoard[x][y];
@@ -103,38 +119,19 @@ bool movePlayer(Player player, int x, int y)
 		return false;
 	}
 	else if ((element == BLINKY) || (element == PINKY) || (element == INKY) || (element == CLYDE)) {
-		player.lives--;
-		if (player.lives == 0) {
-			//gameOver = true;
-		}
-		//reset level
+		//gameOver = true;
 		return false;
 	}
 	else if (element == DOT) {
-		player.score++;
+		score++;
 	}
 	else if (element == SPECIAL_DOT) {
-		player.score++;
+		score+=10;
 		//!!!Need somehow to set ghosts to edible!!!
 	}
-	else if ((element == CHERRY) || (element == BANANA) || (element == STRAWBERRY)) {
-		player.score += 10;
-	}
+	else if (element == FRUIT) {
+		score += 10;
 
-	else if (element == WRAPL) {
-		GameBoard[player.locationRow][player.locationCol] = EMPTY; //current position becomes empty
-		player.locationRow = 10;
-		player.locationCol = 18;
-		GameBoard[player.locationRow][player.locationCol] = PACMAN; //desired position becomes player
-		return true;
-	}
-
-	else if (element == WRAPR) {
-		GameBoard[player.locationRow][player.locationCol] = EMPTY; //current position becomes empty
-		player.locationRow = 10;
-		player.locationCol = 0;
-		GameBoard[player.locationRow][player.locationCol] = PACMAN; //desired position becomes player
-		return true;
 	}
 
 	GameBoard[player.locationRow][player.locationCol] = EMPTY; //current position becomes empty
@@ -369,3 +366,15 @@ bool movePlayer(Player player, int x, int y)
 
 	    return moves.at(0);
 	}
+
+void clearScreen()
+{
+    HANDLE hOut;
+    COORD Position;
+
+    hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+
+    Position.X = 0;
+    Position.Y = 0;
+    SetConsoleCursorPosition(hOut, Position);
+}
