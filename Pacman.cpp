@@ -9,8 +9,8 @@
 /*  TO_DO
 
 fruit repawn
-ghost speed
-ghost characters
+ghost speed`
+ghost characters`
 special dot
 pacman characters
 score board
@@ -201,31 +201,31 @@ void Draw() {
 			||(Pinky.locationX == i && Pinky.locationY == j)
 			||(Inky.locationX == i && Inky.locationY == j)
 			||(Clyde.locationX == i && Clyde.locationY == j))	{
-			cout << "GG";
+			cout << (char)32<<(char)232<<(char)32;
 			}
 		else{
 			if (GameBoard[i][j] == WALL) {
-				cout << "##";
+				cout << (char)178 << (char)178<<(char)178;
 			}
 			else if (GameBoard[i][j] == DOT) {
-				cout << (char)46 <<(char)46;
+				cout << (char)32 <<(char)32<<(char)32;
 				noDot = false;
 			}
 			else if (GameBoard[i][j] == SPECIAL_DOT){
-				cout << "@@";
-				noSpecialDot = false;
+				cout << (char)32 <<(char)32<<(char)32;
+				noSpecialDot = false;	
 			}
 			else if (GameBoard[i][j] == EMPTY) {
-				cout << "  ";
+				cout << "   ";
 			}
 			/*else if (GameBoard[i][j] == PINKY || GameBoard[i][j] == INKY || GameBoard[i][j] == BLINKY || GameBoard[i][j] == CLYDE) {
 				cout << "GG";
 			}*/
 			else if (GameBoard[i][j] == PACMAN) {
-				cout << "XX";
+				cout << (char)92<<(char)32<<(char)47;
 			}
 			else if (GameBoard[i][j] == FRUIT) {
-				cout << "FF";
+				cout << (char)92<<(char)40<<(char)41;
 				noFruit = false;
 			}
 		}
@@ -238,29 +238,63 @@ void Draw() {
 				||(Pinky.locationX == i && Pinky.locationY == j)
 				||(Inky.locationX == i && Inky.locationY == j)
 				||(Clyde.locationX == i && Clyde.locationY == j))	{
-				cout << "GG";
+				cout << (char)47<<(char)95<<(char)92;
 				}
 			else{
 			if (GameBoard[i][j] == WALL) {
-				cout << "##";
+				cout << (char)178 << (char)178<< (char)178;
 			}
 			else if (GameBoard[i][j] == DOT) {
-				cout << (char)46 <<(char)46;
+				cout << (char)32 <<(char)248<<(char)32;
 			}
 			else if (GameBoard[i][j] == SPECIAL_DOT){
-				cout << "@@";
+				cout << (char)32 <<(char)233<<(char)32;
 			}
 			else if (GameBoard[i][j] == EMPTY || GameBoard[i][j] == WRAPL || GameBoard[i][j] == WRAPR) {
-				cout << "  ";
+				cout << "   ";
 			}
 			/*else if (GameBoard[i][j] == PINKY || GameBoard[i][j] == INKY || GameBoard[i][j] == BLINKY || GameBoard[i][j] == CLYDE) {
 				cout << "GG";
 			}*/
 			else if (GameBoard[i][j] == PACMAN) {
-				cout << "XX";
+				cout << (char)229<<(char)95<<(char)229;
 			}
 			else if (GameBoard[i][j] == FRUIT) {
-				cout << "FF";
+				cout << (char)220<<(char)220<<(char)220;
+				noFruit = false;
+			}
+		}
+	}
+	cout << endl;
+		for (int j = 0; j < 19; j++) {
+			if((Blinky.locationX == i && Blinky.locationY == j)
+				||(Pinky.locationX == i && Pinky.locationY == j)
+				||(Inky.locationX == i && Inky.locationY == j)
+				||(Clyde.locationX == i && Clyde.locationY == j))	{
+				cout << (char)32<<(char)32<<(char)32;
+				}
+			else{
+			if (GameBoard[i][j] == WALL) {
+				cout << (char)178 << (char)178<< (char)178;
+			}
+			else if (GameBoard[i][j] == DOT) {
+				cout << (char)32 <<(char)32<<(char)32;
+			}
+			else if (GameBoard[i][j] == SPECIAL_DOT){
+				cout << (char)32 <<(char)32<<(char)32;
+			}
+			else if (GameBoard[i][j] == EMPTY || GameBoard[i][j] == WRAPL || GameBoard[i][j] == WRAPR) {
+				cout << "   ";
+			}
+			/*else if (GameBoard[i][j] == PINKY || GameBoard[i][j] == INKY || GameBoard[i][j] == BLINKY || GameBoard[i][j] == CLYDE) {
+				cout << "GG";
+			}*/
+			else if (GameBoard[i][j] == PACMAN) {
+				cout << (char)62<<(char)61<<(char)60;
+			}
+			else if (GameBoard[i][j] == FRUIT) {
+				cout << (char)219<<(char)219<<(char)219;
+				noFruit = false;
 			}
 		}
 	}
