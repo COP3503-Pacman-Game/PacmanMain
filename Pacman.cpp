@@ -8,14 +8,12 @@
 
 /*  TO_DO
 
-ghost characters (solved)
-fruit characters(solved)
-fix ghost pathfinding from 10 to 5 (solved) 
-pacman characters (solved)
-score board
 fruit repawn
+ghost speed`
+ghost characters`
 special dot
-ghost speed
+pacman characters
+score board
 
 */
 
@@ -26,7 +24,7 @@ using namespace std;
 
 
 
-
+int counter;
 bool gameOver = false;
 bool leavegame = false;
 bool validInput;
@@ -100,7 +98,7 @@ srand(time(NULL));
 	}else
 		move = ways.at(rand()%ways.size());
  			if (style  == 0){
- 				if (sqrt(pow(pacman.locationRow - locationX,2) + pow(pacman.locationCol - locationY,2) ) <5)
+ 				if (sqrt(pow(pacman.locationRow - locationX,2) + pow(pacman.locationCol - locationY,2) ) <10)
  					move = solve(locationX, locationY, endx, endy, board);
  				else if (inColRow())
  					move = solve(locationX, locationY, endx, endy, board);
@@ -184,6 +182,9 @@ void Setup() {
 					GameBoard[i][j] = DOT;
 
 			}
+			else if(GameBoard[i][j] == FRUIT){
+				GameBoard[i][j] = EMPTY;
+			}
 		}
 	}
 
@@ -197,6 +198,7 @@ void Draw() {
 	bool noSpecialDot = true;
 	bool noFruit = true;
 	cout << "SCORE: " << score << endl;
+	//cout << "\t\tCOUNTER: " << counter << endl;
 	for (int i = 0; i < 22; i++) {
 		for (int j = 0; j < 19; j++) {
 		if((Blinky.locationX == i && Blinky.locationY == j)
@@ -305,6 +307,14 @@ void Draw() {
 	if (noDot && noSpecialDot && noFruit){
 		gameOver = true;
 		direction = WIN_GAME;
+	}
+	if ((direction == LEFT || direction == RIGHT || direction == UP || direction == DOWN) && noFruit==true){
+	counter++;
+	}
+
+	if (counter == 20){
+		generateFruit();
+		counter = 0;
 	}
 
 }
@@ -464,7 +474,10 @@ int main()
 				cout << "CONGRATULATIONS YOU WIN!" << endl;
 				Sleep(1000);
 			}
-			else if (gameOver == true){
+			else if(gameOver == true && direction == QUIT){
+				exit(0);
+			}
+			else if (gameOver == true && direction != NEW_GAME){
 				system("cls");
 				cout << "GAME OVER!" << endl;
 				Sleep(1000);
@@ -488,4 +501,6 @@ int main()
 		}
 
 	} while (leavegame == false);
+
+	return 0;
 }
