@@ -77,16 +77,16 @@ bool inColRow(){
  				board[i][j]=GameBoard[i][j];
  			vector<int> ways;
  			ways.clear();
-if (dir!=RIGHT && locationY-1>=0 && GameBoard[locationX][locationY-1]!=WALL){
+if (dir!=RIGHT && locationY-1>=0 && GameBoard[locationX][locationY-1]!=WALL && (!isEdible || locationY <= pacman.locationCol )){
 	ways.push_back(LEFT);
 }
-if (dir!=LEFT && locationY+1<19 && GameBoard[locationX][locationY+1]!=WALL){
+if (dir!=LEFT && locationY+1<19 && GameBoard[locationX][locationY+1]!=WALL && (!isEdible || locationY >= pacman.locationCol ){
 	ways.push_back(RIGHT);
 }
-if (dir!=DOWN && locationX-1>=0 && GameBoard[locationX-1][locationY]!=WALL){
+if (dir!=DOWN && locationX-1>=0 && GameBoard[locationX-1][locationY]!=WALL && (!isEdible || locationX <= pacman.locatiionRow){
 	ways.push_back(UP);
 }
-if (dir!=UP && locationX+1<22 && GameBoard[locationX+1][locationY]!=WALL){
+if (dir!=UP && locationX+1<22 && GameBoard[locationX+1][locationY]!=WALL&& (!isEdible || locationX >= pacman.locationRow ){
 	ways.push_back(DOWN);
 }
 int move;
