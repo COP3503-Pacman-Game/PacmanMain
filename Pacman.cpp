@@ -8,12 +8,14 @@
 
 /*  TO_DO
 
-fruit repawn
-ghost speed`
-ghost characters`
-special dot
-pacman characters
+ghost characters (solved)
+fruit characters(solved)
+fix ghost pathfinding from 10 to 5 (solved) 
+pacman characters (solved)
 score board
+fruit repawn
+special dot
+ghost speed
 
 */
 
@@ -98,7 +100,7 @@ srand(time(NULL));
 	}else
 		move = ways.at(rand()%ways.size());
  			if (style  == 0){
- 				if (sqrt(pow(pacman.locationRow - locationX,2) + pow(pacman.locationCol - locationY,2) ) <10)
+ 				if (sqrt(pow(pacman.locationRow - locationX,2) + pow(pacman.locationCol - locationY,2) ) <5)
  					move = solve(locationX, locationY, endx, endy, board);
  				else if (inColRow())
  					move = solve(locationX, locationY, endx, endy, board);
