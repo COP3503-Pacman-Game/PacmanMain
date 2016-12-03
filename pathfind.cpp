@@ -6,7 +6,11 @@ using namespace std;
 vector<int> solve(int startx, int starty, int endx, int endy, int board[22][19]) {
     
     
-    
+    for (int i=0;i<19;i++)
+       for (int j=0; j<22;j++)
+           if (board[j][i] > 0 )
+               board[j][i] =1;
+
     
     queue<int> Xloc;
     queue<int> Yloc;
