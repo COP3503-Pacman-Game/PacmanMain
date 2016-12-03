@@ -1,4 +1,6 @@
 #include "Pacman.h"
+#include "Windows.h"
+#include "conio.h"
 using namespace std;
 
 bool startOver;
@@ -86,7 +88,7 @@ void Setup() {
 }
 
 void Draw() {
-	system("clear");
+
 	cout << "SCORE: " << pacman.score << endl;
 	for (int i = 0; i < 22; i++) {
 		for (int j = 0; j < 19; j++) {
@@ -150,18 +152,8 @@ void Draw() {
 void Input() {
 
 
-	validInput = false;
-	direction = HOLD;
-
-	while (validInput == false) {
-		cin >> input;
-		if (cin.fail()) {
-			cin.clear();
-			cin.ignore(256, '\n');
-			bool validInput = false;
-		}
-		else {
-			switch (input) {
+	if(_kbhit()){
+		switch(_getch()){
 			case 'n':
 				validInput = true;
 				direction = NEW_GAME;
@@ -194,9 +186,17 @@ void Input() {
 				validInput = false;
 				direction = HOLD;
 				break;
-			}
+
 		}
 	}
+	cout<<pacman.locationRow<<" "<<pacman.locationCol;
+	Blinky.mover(pacman.locationCol, pacman.locationRow);
+	Pinky.mover(pacman.locationCol, pacman.locationRow);
+	Inky.mover(pacman.locationCol, pacman.locationRow);
+	Clyde.mover(pacman.locationCol, pacman.locationRow);
+	Sleep(500);
+
+	
 }
 
 void Logic() {
@@ -285,7 +285,7 @@ int main()
 		Setup();
 		while (gameOver == false)
 		{
-
+	system("cls");
 			Draw();
 			Input();
 			Logic();

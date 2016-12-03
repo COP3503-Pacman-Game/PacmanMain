@@ -170,14 +170,17 @@ bool movePlayer(Player player, int x, int y)
 	    int X;
 	    int Y;
 	    //int board[sizex][sizey];
-	    for (i=0;i<sizex;i++)
-	        for (j=0;j<sizey;j++)
-	            board[i][j]=1;
 	    Xloc.push(startx);
 	    Yloc.push(starty);
 	    board[startx][starty]=2;
+	    for (int i=0;i<22;i++){
+	       for (int j=0; j<19;j++)
+	           cout<<board[i][j]<<" ";
+	    	cout<<endl;
+	    }
 
 
+cout<<"got to path out"<<endl;
 	    while(!Xloc.empty()){
 	        bool nott = true;
 
@@ -245,11 +248,15 @@ bool movePlayer(Player player, int x, int y)
 	        // cout<< Xloc.front()<<" "<<Yloc.front()<<endl;
 
 	    }
+	    /*
 	    for (i=0;i<sizex;i++){
 	        for (j=0;j<sizey;j++)
 	            cout<<board[j][i]<<" ";
 	        cout<<endl;
 	    }
+	    */
+	  
+	    cout<<"got to destroy"<<endl;
 	    while (!Xdes.empty()){
 	        int XD = Xdes.front();
 	        Xdes.pop();
@@ -292,6 +299,12 @@ bool movePlayer(Player player, int x, int y)
 	            }
 	        }
 	    }
+	      for (int i=0;i<22;++i){
+	    	for (int j=0;j<19;++j)
+	    		cout<<board[i][j]<<" ";
+	    	cout<<endl;
+		}
+	    cout<<"got to real path"<<endl;
 	    vector <int>moves ;
 	    int curx=startx;
 	    int cury=starty;
@@ -299,29 +312,30 @@ bool movePlayer(Player player, int x, int y)
 	    if (curx-1>=0 && board[curx-1][cury]>board[curx][cury] ){
 	        curx-=1;
 	        //cout<<"left"<<endl;
-	        moves.push_back(0);
+	        return 0;
 	    }
 	    //up=1
 	    else if (cury-1>=0 && board[curx][cury-1]>board[curx][cury] ){
 	        cury-=1;
 	        //cout<<"up"<<endl;
-	        moves.push_back(1);
+	        return 1;
 	    }
 	    //right=2
 	    else if (curx+1<sizex && board[curx+1][cury]>board[curx][cury] ){
 	        curx+=1;
 	        //cout<<"right"<<endl;
-	        moves.push_back(2);
+	        return 2;
 	    }
 	    //down=3
 	    else if (cury+1<sizey && board[curx][cury+1]>board[curx][cury] ){
 	        cury+=1;
 	        //cout<<"down"<<endl;
-	        moves.push_back(3);
+	        return 3;
 	    }
-
+	    cout<<"got to real path2"<<endl;
 	    while(curx!=endx || cury!=endy){
 	        //left=0
+	        cout<< curx <<" "<<cury<<endl;
 	        if (curx-1>=0 && board[curx-1][cury]>board[curx][cury] ){
 	            board[curx][cury]=-1;
 	            curx-=1;
