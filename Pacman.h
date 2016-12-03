@@ -48,11 +48,11 @@ int GameBoard[22][19] = {
 	{ WALL  ,WALL  ,WALL  ,WALL  ,EMPTY ,WALL  ,EMPTY ,WALL  ,WALL  ,PINKY ,WALL  ,WALL  ,EMPTY ,WALL  ,EMPTY ,WALL  ,WALL  ,WALL  ,WALL },
 	{ WRAPL ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,WALL  ,INKY  ,BLINKY,CLYDE ,WALL  ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,WRAPR },
 	{ WALL  ,WALL  ,WALL  ,WALL  ,EMPTY ,WALL  ,EMPTY ,WALL  ,WALL  ,WALL  ,WALL  ,WALL  ,EMPTY ,WALL  ,EMPTY ,WALL  ,WALL  ,WALL  ,WALL },
-	{ EMPTY ,EMPTY ,EMPTY ,WALL  ,EMPTY ,WALL  ,EMPTY ,EMPTY ,EMPTY, PACMAN,EMPTY ,EMPTY ,EMPTY ,WALL  ,EMPTY ,WALL  ,EMPTY ,EMPTY ,EMPTY },
+	{ EMPTY ,EMPTY ,EMPTY ,WALL  ,EMPTY ,WALL  ,EMPTY ,EMPTY ,EMPTY, EMPTY ,EMPTY ,EMPTY ,EMPTY ,WALL  ,EMPTY ,WALL  ,EMPTY ,EMPTY ,EMPTY },
 	{ WALL  ,WALL  ,WALL  ,WALL  ,EMPTY ,WALL  ,EMPTY ,WALL  ,WALL  ,WALL  ,WALL  ,WALL  ,EMPTY ,WALL  ,EMPTY ,WALL  ,WALL  ,WALL  ,WALL },
 	{ WALL  ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,WALL  ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,WALL },
 	{ WALL  ,EMPTY ,WALL  ,WALL  ,EMPTY ,WALL  ,WALL  ,WALL  ,EMPTY ,WALL  ,EMPTY ,WALL  ,WALL  ,WALL  ,EMPTY ,WALL  ,WALL  ,EMPTY ,WALL },
-	{ WALL  ,EMPTY ,EMPTY ,WALL  ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,WALL  ,EMPTY ,EMPTY ,WALL },
+	{ WALL  ,EMPTY ,EMPTY ,WALL  ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,PACMAN ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,WALL  ,EMPTY ,EMPTY ,WALL },
 	{ WALL  ,WALL  ,EMPTY ,WALL  ,EMPTY ,WALL  ,EMPTY ,WALL  ,WALL  ,WALL  ,WALL  ,WALL  ,EMPTY ,WALL  ,EMPTY ,WALL  ,EMPTY ,WALL  ,WALL },
 	{ WALL  ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,WALL  ,EMPTY ,EMPTY ,EMPTY ,WALL  ,EMPTY ,EMPTY ,EMPTY ,WALL  ,EMPTY ,EMPTY ,EMPTY ,EMPTY ,WALL },
 	{ WALL  ,EMPTY ,WALL  ,WALL  ,WALL  ,WALL  ,WALL  ,WALL  ,EMPTY ,WALL  ,EMPTY ,WALL  ,WALL  ,WALL  ,WALL  ,WALL  ,WALL  ,EMPTY ,WALL },
@@ -65,9 +65,10 @@ int GameBoard[22][19] = {
 struct Player
 {
 	int locationRow, locationCol, score, lives;
+	double movementTimer;
 	Player()
 	{
-		locationRow = 12;
+		locationRow = 16;
 		locationCol = 9;
 		score = 0;
 		lives = 3;
@@ -99,8 +100,10 @@ bool movePlayer(Player player, int x, int y)
 {
 	//Reset WRAPR and WRAPL
 	//TEMPORARY- MAKE SURE TO CHANGE
-	GameBoard[10][18] = WRAPR;
-	GameBoard[10][19] = WRAPL;
+	//if (pacman.locationRow != 10 && (pacman.locationCol != 18 && pacman.locationCol != 19)) {
+		GameBoard[10][18] = WRAPR;
+		GameBoard[10][19] = WRAPL;
+	//}
 
 	int element = GameBoard[x][y];
 
@@ -146,25 +149,5 @@ bool movePlayer(Player player, int x, int y)
 	player.locationRow = x; player.locationCol = y;
 	GameBoard[player.locationRow][player.locationCol] = PACMAN; //desired position becomes player
 	return true;
-	}
-	/*
-	//Wrap-around
-	else if (x < 0) {	//left to right
-		x = LevelX - 1;
-	}
-	else if (x == LevelX) { //right to left
-		x = 0;
-	}
-	else if (y < 0) { //top to bottom
-		y = LevelY - 1;
-	}
-	else if (y == LevelY) { //bottom to top
-		y = 0;
-	}
-	
-	
-	*/
 
-
-
-
+	}

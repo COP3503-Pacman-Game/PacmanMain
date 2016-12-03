@@ -24,8 +24,25 @@ void Setup() {
 	Inky.locationY = 8;
 	Clyde.locationX = 10;
 	Clyde.locationY = 10;
-	pacman.locationRow = 12;
+	pacman.locationRow = 16;
 	pacman.locationCol = 9;
+
+
+	for (int i = 0; i < 22; i++) {
+		for (int j = 0; j < 19; j++) {
+			if (GameBoard[i][j] == EMPTY) {
+				if (j >= 5 && j <= 13 && i >= 7 && i <= 13) {
+					GameBoard[i][j] = EMPTY;
+				}
+				else if ((i == 8 || i == 12) && ((j >= 0 && j <= 2) || (j <= 18 && j >= 16))) {
+					GameBoard[i][j] = EMPTY;
+				}
+				else
+					GameBoard[i][j] = DOT;
+
+			}
+		}
+	}
 }
 
 void Draw() {
@@ -34,6 +51,9 @@ void Draw() {
 		for (int j = 0; j < 19; j++) {
 			if (GameBoard[i][j] == WALL) {
 				cout << "#";
+			}
+			else if (GameBoard[i][j] == DOT) {
+				cout << "*";
 			}
 			else if (GameBoard[i][j] == EMPTY || GameBoard[i][j] == WRAPL || GameBoard[i][j] == WRAPR) {
 				cout << " ";
