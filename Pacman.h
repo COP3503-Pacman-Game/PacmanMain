@@ -88,7 +88,12 @@ void generateFruit(){
 		int locFruitCol = rand() % 19;
 		int element = GameBoard[locFruitRow][locFruitCol];
 		if (element==WALL || element==PACMAN || element==INKY || element==PINKY || element==CLYDE  || element==BLINKY || element == SPECIAL_DOT){
-
+			validLoc = false;
+		}
+		else if((locFruitRow == 8 || locFruitRow == 12) && ((locFruitCol >= 0 && locFruitCol <= 2) || (locFruitCol <= 18 && locFruitCol >= 16))){
+			validLoc = false;
+		}
+		else if (locFruitCol >= 5 && locFruitCol <= 13 && locFruitRow >= 7 && locFruitRow <= 13) {
 			validLoc = false;
 		}
 		else{
