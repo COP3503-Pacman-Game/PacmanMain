@@ -6,6 +6,16 @@
 //FIXED WRAP OMFG
 //FIXED Flicker
 
+/*  TO_DO
+
+fruit repawn
+ghost speed
+ghost characters
+special dot
+pacman characters
+score board
+
+*/
 
 #include "Pacman.h"
 #include <conio.h>
@@ -307,7 +317,7 @@ void Input() {
 		Inky.mover(pacman.locationCol, pacman.locationRow);
 		Clyde.mover(pacman.locationCol, pacman.locationRow);
 }
-	Sleep(400);
+	Sleep(100);
 	}
 
 
