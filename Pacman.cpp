@@ -7,14 +7,12 @@
 //FIXED Flicker
 
 /*  TO_DO
-
 fruit repawn
 ghost speed`
 ghost characters`
 special dot
 pacman characters
 score board
-
 */
 
 #include "Pacman.h"
@@ -205,31 +203,31 @@ void Draw() {
 			||(Pinky.locationX == i && Pinky.locationY == j)
 			||(Inky.locationX == i && Inky.locationY == j)
 			||(Clyde.locationX == i && Clyde.locationY == j))	{
-			cout << (char)32<<(char)232<<(char)32;
+			cout << " " << (char)32<<(char)232<<(char)32 << " ";
 			}
 		else{
 			if (GameBoard[i][j] == WALL) {
-				cout << (char)178 << (char)178<<(char)178;
+				cout << (char)178 << (char)178 << (char)178 <<(char)178 << (char)178 ;
 			}
 			else if (GameBoard[i][j] == DOT) {
-				cout << (char)32 <<(char)32<<(char)32;
+				cout << "     " ;
 				noDot = false;
 			}
 			else if (GameBoard[i][j] == SPECIAL_DOT){
-				cout << (char)32 <<(char)32<<(char)32;
+				cout << "     " ;
 				noSpecialDot = false;	
 			}
 			else if (GameBoard[i][j] == EMPTY) {
-				cout << "   ";
+				cout << "     ";
 			}
 			/*else if (GameBoard[i][j] == PINKY || GameBoard[i][j] == INKY || GameBoard[i][j] == BLINKY || GameBoard[i][j] == CLYDE) {
 				cout << "GG";
 			}*/
 			else if (GameBoard[i][j] == PACMAN) {
-				cout << (char)92<<(char)32<<(char)47;
+				cout << " " << (char)92<<(char)32<<(char)47<< " " ;
 			}
 			else if (GameBoard[i][j] == FRUIT) {
-				cout << (char)92<<(char)40<<(char)41;
+				cout << " " << (char)92<<(char)40<<(char)41<< " " ;
 				noFruit = false;
 			}
 		}
@@ -242,29 +240,29 @@ void Draw() {
 				||(Pinky.locationX == i && Pinky.locationY == j)
 				||(Inky.locationX == i && Inky.locationY == j)
 				||(Clyde.locationX == i && Clyde.locationY == j))	{
-				cout << (char)47<<(char)95<<(char)92;
+				cout << " " << (char)47<<(char)95<<(char)92 << " ";
 				}
 			else{
 			if (GameBoard[i][j] == WALL) {
-				cout << (char)178 << (char)178<< (char)178;
+				cout << (char)178 << (char)178 << (char)178 <<(char)178 << (char)178;
 			}
 			else if (GameBoard[i][j] == DOT) {
-				cout << (char)32 <<(char)248<<(char)32;
+				cout << "  " << (char)248 << "  " ;
 			}
 			else if (GameBoard[i][j] == SPECIAL_DOT){
-				cout << (char)32 <<(char)233<<(char)32;
+				cout << "  " << (char)233 << "  " ;
 			}
 			else if (GameBoard[i][j] == EMPTY || GameBoard[i][j] == WRAPL || GameBoard[i][j] == WRAPR) {
-				cout << "   ";
+				cout << "     ";
 			}
 			/*else if (GameBoard[i][j] == PINKY || GameBoard[i][j] == INKY || GameBoard[i][j] == BLINKY || GameBoard[i][j] == CLYDE) {
 				cout << "GG";
 			}*/
 			else if (GameBoard[i][j] == PACMAN) {
-				cout << (char)229<<(char)95<<(char)229;
+				cout << " " << (char)229<<(char)95<<(char)229<< " " ;
 			}
 			else if (GameBoard[i][j] == FRUIT) {
-				cout << (char)220<<(char)220<<(char)220;
+				cout << " " << (char)220<<(char)220<<(char)220<< " " ;
 				noFruit = false;
 			}
 		}
@@ -275,29 +273,29 @@ void Draw() {
 				||(Pinky.locationX == i && Pinky.locationY == j)
 				||(Inky.locationX == i && Inky.locationY == j)
 				||(Clyde.locationX == i && Clyde.locationY == j))	{
-				cout << (char)32<<(char)32<<(char)32;
+				cout << " " << (char)32<<(char)32<<(char)32<< " " ;
 				}
 			else{
 			if (GameBoard[i][j] == WALL) {
-				cout << (char)178 << (char)178<< (char)178;
+				cout << (char)178 << (char)178 << (char)178 <<(char)178 << (char)178;
 			}
 			else if (GameBoard[i][j] == DOT) {
-				cout << (char)32 <<(char)32<<(char)32;
+				cout << "     " ;
 			}
 			else if (GameBoard[i][j] == SPECIAL_DOT){
-				cout << (char)32 <<(char)32<<(char)32;
+				cout << "     " ;
 			}
 			else if (GameBoard[i][j] == EMPTY || GameBoard[i][j] == WRAPL || GameBoard[i][j] == WRAPR) {
-				cout << "   ";
+				cout << "     ";
 			}
 			/*else if (GameBoard[i][j] == PINKY || GameBoard[i][j] == INKY || GameBoard[i][j] == BLINKY || GameBoard[i][j] == CLYDE) {
 				cout << "GG";
 			}*/
 			else if (GameBoard[i][j] == PACMAN) {
-				cout << (char)62<<(char)61<<(char)60;
+				cout << " " << (char)62<<(char)61<<(char)60<< " " ;
 			}
 			else if (GameBoard[i][j] == FRUIT) {
-				cout << (char)219<<(char)219<<(char)219;
+				cout << " " << (char)219<<(char)219<<(char)219<< " " ;
 				noFruit = false;
 			}
 		}
