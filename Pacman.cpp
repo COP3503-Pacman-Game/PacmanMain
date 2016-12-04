@@ -7,10 +7,10 @@
 //FIXED Flicker
 
 /*  TO_DO
-fruit repawn
+fruit repawn - done
 ghost speed`
 ghost characters`
-special dot
+special dot 
 pacman characters
 score board
 */
@@ -20,8 +20,7 @@ score board
 #include <Windows.h>
 using namespace std;
 
-
-
+int edibleCounter = 0;
 int counter;
 bool gameOver = false;
 bool leavegame = false;
@@ -29,13 +28,13 @@ bool validInput;
 char input;
 int direction = -1;
 
+
 Player pacman;
 
 struct Ghost
 {
 	int speed, pointValue, locationX, locationY, style, dir;
 	bool isEdible;
-	double timeIsEdible;
 	Ghost()
 	{
 		isEdible = false;
@@ -77,16 +76,16 @@ bool inColRow(){
  				board[i][j]=GameBoard[i][j];
  			vector<int> ways;
  			ways.clear();
-if (dir!=RIGHT && locationY-1>=0 && GameBoard[locationX][locationY-1]!=WALL){
+if (dir!=RIGHT && locationY-1>=0 && GameBoard[locationX][locationY-1]!=WALL && (!isEdible || locationY <= pacman.locationCol || !inColRow())){
 	ways.push_back(LEFT);
 }
-if (dir!=LEFT && locationY+1<19 && GameBoard[locationX][locationY+1]!=WALL){
+if (dir!=LEFT && locationY+1<19 && GameBoard[locationX][locationY+1]!=WALL && (!isEdible || locationY >= pacman.locationCol || !inColRow())){
 	ways.push_back(RIGHT);
 }
-if (dir!=DOWN && locationX-1>=0 && GameBoard[locationX-1][locationY]!=WALL){
+if (dir!=DOWN && locationX-1>=0 && GameBoard[locationX-1][locationY]!=WALL && (!isEdible || locationX <= pacman.locationRow || !inColRow())){
 	ways.push_back(UP);
 }
-if (dir!=UP && locationX+1<22 && GameBoard[locationX+1][locationY]!=WALL){
+if (dir!=UP && locationX+1<22 && GameBoard[locationX+1][locationY]!=WALL&& (!isEdible || locationX >= pacman.locationRow || !inColRow())){
 	ways.push_back(DOWN);
 }
 int move;
@@ -95,6 +94,8 @@ srand(time(NULL));
 		move=(dir+2)%4;
 	}else
 		move = ways.at(rand()%ways.size());
+
+		if (!isEdible){
  			if (style  == 0){
  				if (sqrt(pow(pacman.locationRow - locationX,2) + pow(pacman.locationCol - locationY,2) ) < 5)
  					move = solve(locationX, locationY, endx, endy, board);
@@ -104,7 +105,7 @@ srand(time(NULL));
  				if (inColRow() )
  					move = solve(locationX, locationY, endx, endy, board);
  			}
-		
+		}
 		//cout<<move<<endl;
 		//up
 		if(move==0){
@@ -127,8 +128,17 @@ srand(time(NULL));
 			locationY--;
 		}
 
-		if(locationX == pacman.locationRow && locationY == pacman.locationCol){
+		if(locationX == pacman.locationRow && locationY == pacman.locationCol && isEdible == false){
+			Draw();
 			gameOver=true;
+			direction = HOLD;
+			Sleep(1000);
+		}
+
+		else if(locationX == pacman.locationRow && locationY == pacman.locationCol && isEdible == true){
+			locationX=9;
+			locationY=9;
+			isEdible = false;
 		}
 
 	}
@@ -144,6 +154,7 @@ Ghost Clyde;
 
 void Setup() {
 	score = 0;
+	ghostTimer=0;
 	Blinky.locationX = 9;
 	Blinky.locationY = 9;
 	Blinky.style = 0;
@@ -160,6 +171,10 @@ void Setup() {
 	pacman.locationCol = 9;
 
 	GameBoard[16][9] = PACMAN;
+	GameBoard[3][1] = SPECIAL_DOT;
+	GameBoard[3][17] = SPECIAL_DOT;
+	GameBoard[16][1] = SPECIAL_DOT;
+	GameBoard[16][17] = SPECIAL_DOT;
 
 	//GameBoard[Blinky.locationX][Blinky.locationY] = BLINKY;
 	//GameBoard[Pinky.locationX][Pinky.locationY] = PINKY;
@@ -186,6 +201,7 @@ void Setup() {
 		}
 	}
 
+
 	generateFruit();
 	
 }
@@ -199,12 +215,38 @@ void Draw() {
 	//cout << "\t\tCOUNTER: " << counter << endl;
 	for (int i = 0; i < 22; i++) {
 		for (int j = 0; j < 19; j++) {
-		if((Blinky.locationX == i && Blinky.locationY == j)
-			||(Pinky.locationX == i && Pinky.locationY == j)
-			||(Inky.locationX == i && Inky.locationY == j)
-			||(Clyde.locationX == i && Clyde.locationY == j))	{
-			cout << " " << (char)32<<(char)232<<(char)32 << " ";
+			if(Blinky.locationX == i && Blinky.locationY == j){
+			if(Blinky.isEdible){
+				cout << " \\!/ ";
 			}
+			else{
+				cout << "  " << (char)232 << "  ";
+			}
+		}
+		else if(Pinky.locationX == i && Pinky.locationY == j){
+			if(Pinky.isEdible){
+				cout << " \\!/ ";
+			}
+			else{
+				cout << "  " << (char)232 << "  ";
+			}
+		}
+		else if(Inky.locationX == i && Inky.locationY == j){
+			if(Inky.isEdible){
+				cout << " \\!/ ";
+			}
+			else{
+				cout << "  " << (char)232 << "  ";
+			}
+		}
+		else if(Clyde.locationX == i && Clyde.locationY == j){
+			if(Clyde.isEdible){
+				cout << " \\!/ ";
+			}
+			else{
+				cout << "  " << (char)232 << "  ";
+			}
+		}
 		else{
 			if (GameBoard[i][j] == WALL) {
 				cout << (char)178 << (char)178 << (char)178 <<(char)178 << (char)178 ;
@@ -236,12 +278,18 @@ void Draw() {
 
 		cout << endl;
 		for (int j = 0; j < 19; j++) {
-			if((Blinky.locationX == i && Blinky.locationY == j)
-				||(Pinky.locationX == i && Pinky.locationY == j)
-				||(Inky.locationX == i && Inky.locationY == j)
-				||(Clyde.locationX == i && Clyde.locationY == j))	{
-				cout << " " << (char)47<<(char)95<<(char)92 << " ";
-				}
+			if(Blinky.locationX == i && Blinky.locationY == j){
+				cout << " /B\\ ";
+			}
+			else if(Pinky.locationX == i && Pinky.locationY == j){
+				cout << " /P\\ ";
+			}
+			else if(Inky.locationX == i && Inky.locationY == j){
+				cout << " /I\\ ";
+			}
+			else if(Clyde.locationX == i && Clyde.locationY == j){
+				cout << " /C\\ ";
+			}
 			else{
 			if (GameBoard[i][j] == WALL) {
 				cout << (char)178 << (char)178 << (char)178 <<(char)178 << (char)178;
@@ -262,7 +310,7 @@ void Draw() {
 				cout << " " << (char)229<<(char)95<<(char)229<< " " ;
 			}
 			else if (GameBoard[i][j] == FRUIT) {
-				cout << " " << (char)220<<(char)220<<(char)220<< " " ;
+				cout << " " << (char)219<<(char)219<<(char)219<< " " ;
 				noFruit = false;
 			}
 		}
@@ -295,14 +343,14 @@ void Draw() {
 				cout << " " << (char)62<<(char)61<<(char)60<< " " ;
 			}
 			else if (GameBoard[i][j] == FRUIT) {
-				cout << " " << (char)219<<(char)219<<(char)219<< " " ;
+				cout << " " << (char)223<<(char)223<<(char)223<< " " ;
 				noFruit = false;
 			}
 		}
 	}
 		cout<<endl;
 	}
-	if (noDot && noSpecialDot && noFruit){
+	if (noDot && noSpecialDot /*&& noFruit*/){
 		gameOver = true;
 		direction = WIN_GAME;
 	}
@@ -313,6 +361,25 @@ void Draw() {
 	if (counter == 20){
 		generateFruit();
 		counter = 0;
+	}
+
+	if(ghostEdibleMode == true){
+		if (edibleCounter == 40){
+			Blinky.isEdible = true;
+			Inky.isEdible = true;
+			Pinky.isEdible = true;
+			Clyde.isEdible = true;
+		}
+		edibleCounter--;
+	}
+
+	if(edibleCounter == 0){
+		ghostEdibleMode = false;
+		Blinky.isEdible = false;
+		Inky.isEdible = false;
+		Pinky.isEdible = false;
+		Clyde.isEdible = false;
+		edibleCounter = 40;
 	}
 
 }
@@ -355,13 +422,14 @@ void Input() {
 				break;
 			}
 		}
-		if(direction != -1){
+		if(direction != -1 && ghostTimer%2 == 0){
 		Blinky.mover(pacman.locationCol, pacman.locationRow);
 		Pinky.mover(pacman.locationCol, pacman.locationRow);
 		Inky.mover(pacman.locationCol, pacman.locationRow);
 		Clyde.mover(pacman.locationCol, pacman.locationRow);
 }
 	Sleep(100);
+	ghostTimer+=3;
 	}
 
 
@@ -439,7 +507,6 @@ void Logic() {
 				case 'r':
 					direction = HOLD;
 					validInput = true;
-					cout << "RESUME" << endl;
 					break;
 				default:
 					validInput = false;

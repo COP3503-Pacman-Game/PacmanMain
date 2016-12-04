@@ -11,7 +11,8 @@
 #include <ctime>
 
 using namespace std;
-int score;
+int score, ghostTimer;
+bool ghostEdibleMode = false;
 //bool gameOver;
 
 //Gamestates
@@ -66,7 +67,7 @@ int GameBoard[22][19] = {
 	{ WALL  ,WALL  ,WALL  ,WALL  ,WALL  ,WALL  ,WALL  ,WALL  ,WALL  ,WALL , WALL  ,WALL  ,WALL  ,WALL  ,WALL  ,WALL  ,WALL  ,WALL  ,WALL }
 	};
 
-
+void Draw();
 
 struct Player
 {
@@ -135,6 +136,7 @@ bool movePlayer(Player player, int x, int y)
 	}
 	else if (element == SPECIAL_DOT) {
 		score+=10;
+		ghostEdibleMode = true;
 		//!!!Need somehow to set ghosts to edible!!!
 	}
 	else if (element == FRUIT) { //fixed fruit
