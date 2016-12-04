@@ -12,6 +12,7 @@
 
 using namespace std;
 int score;
+bool ghostEdibleMode = false;
 //bool gameOver;
 
 //Gamestates
@@ -135,6 +136,7 @@ bool movePlayer(Player player, int x, int y)
 	}
 	else if (element == SPECIAL_DOT) {
 		score+=10;
+		ghostEdibleMode = true;
 		//!!!Need somehow to set ghosts to edible!!!
 	}
 	else if (element == FRUIT) { //fixed fruit

@@ -20,8 +20,7 @@ score board
 #include <Windows.h>
 using namespace std;
 
-
-
+int edibleCounter = 0;
 int counter;
 bool gameOver = false;
 bool leavegame = false;
@@ -35,7 +34,6 @@ struct Ghost
 {
 	int speed, pointValue, locationX, locationY, style, dir;
 	bool isEdible;
-	double timeIsEdible;
 	Ghost()
 	{
 		isEdible = false;
@@ -80,13 +78,13 @@ bool inColRow(){
 if (dir!=RIGHT && locationY-1>=0 && GameBoard[locationX][locationY-1]!=WALL && (!isEdible || locationY <= pacman.locationCol )){
 	ways.push_back(LEFT);
 }
-if (dir!=LEFT && locationY+1<19 && GameBoard[locationX][locationY+1]!=WALL && (!isEdible || locationY >= pacman.locationCol ){
+if (dir!=LEFT && locationY+1<19 && GameBoard[locationX][locationY+1]!=WALL && (!isEdible || locationY >= pacman.locationCol )){
 	ways.push_back(RIGHT);
 }
-if (dir!=DOWN && locationX-1>=0 && GameBoard[locationX-1][locationY]!=WALL && (!isEdible || locationX <= pacman.locatiionRow){
+if (dir!=DOWN && locationX-1>=0 && GameBoard[locationX-1][locationY]!=WALL && (!isEdible || locationX <= pacman.locationRow)){
 	ways.push_back(UP);
 }
-if (dir!=UP && locationX+1<22 && GameBoard[locationX+1][locationY]!=WALL&& (!isEdible || locationX >= pacman.locationRow ){
+if (dir!=UP && locationX+1<22 && GameBoard[locationX+1][locationY]!=WALL&& (!isEdible || locationX >= pacman.locationRow )){
 	ways.push_back(DOWN);
 }
 int move;
@@ -95,6 +93,8 @@ srand(time(NULL));
 		move=(dir+2)%4;
 	}else
 		move = ways.at(rand()%ways.size());
+
+		if (!isEdible){
  			if (style  == 0){
  				if (sqrt(pow(pacman.locationRow - locationX,2) + pow(pacman.locationCol - locationY,2) ) < 5)
  					move = solve(locationX, locationY, endx, endy, board);
@@ -104,7 +104,7 @@ srand(time(NULL));
  				if (inColRow() )
  					move = solve(locationX, locationY, endx, endy, board);
  			}
-		
+		}
 		//cout<<move<<endl;
 		//up
 		if(move==0){
@@ -127,8 +127,16 @@ srand(time(NULL));
 			locationY--;
 		}
 
-		if(locationX == pacman.locationRow && locationY == pacman.locationCol){
+		if(locationX == pacman.locationRow && locationY == pacman.locationCol && isEdible == false){
 			gameOver=true;
+			direction = HOLD;
+			Sleep(1000);
+		}
+
+		else if(locationX == pacman.locationRow && locationY == pacman.locationCol && isEdible == true){
+			locationX=9;
+			locationY=9;
+			isEdible = false;
 		}
 
 	}
@@ -160,6 +168,10 @@ void Setup() {
 	pacman.locationCol = 9;
 
 	GameBoard[16][9] = PACMAN;
+	GameBoard[3][1] = SPECIAL_DOT;
+	GameBoard[3][17] = SPECIAL_DOT;
+	GameBoard[16][1] = SPECIAL_DOT;
+	GameBoard[16][17] = SPECIAL_DOT;
 
 	//GameBoard[Blinky.locationX][Blinky.locationY] = BLINKY;
 	//GameBoard[Pinky.locationX][Pinky.locationY] = PINKY;
@@ -185,6 +197,7 @@ void Setup() {
 			}
 		}
 	}
+
 
 	generateFruit();
 	
@@ -315,6 +328,25 @@ void Draw() {
 		counter = 0;
 	}
 
+	if(ghostEdibleMode == true){
+		if (edibleCounter == 20){
+			Blinky.isEdible = true;
+			Inky.isEdible = true;
+			Pinky.isEdible = true;
+			Clyde.isEdible = true;
+		}
+		edibleCounter--;
+	}
+
+	if(edibleCounter == 0){
+		ghostEdibleMode = false;
+		Blinky.isEdible = false;
+		Inky.isEdible = false;
+		Pinky.isEdible = false;
+		Clyde.isEdible = false;
+		edibleCounter = 20;
+	}
+
 }
 
 
@@ -439,7 +471,6 @@ void Logic() {
 				case 'r':
 					direction = HOLD;
 					validInput = true;
-					cout << "RESUME" << endl;
 					break;
 				default:
 					validInput = false;
