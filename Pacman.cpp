@@ -212,12 +212,38 @@ void Draw() {
 	//cout << "\t\tCOUNTER: " << counter << endl;
 	for (int i = 0; i < 22; i++) {
 		for (int j = 0; j < 19; j++) {
-		if((Blinky.locationX == i && Blinky.locationY == j)
-			||(Pinky.locationX == i && Pinky.locationY == j)
-			||(Inky.locationX == i && Inky.locationY == j)
-			||(Clyde.locationX == i && Clyde.locationY == j))	{
-			cout << " " << (char)32<<(char)232<<(char)32 << " ";
+		if(Blinky.locationX == i && Blinky.locationY == j){
+			if(Blinky.isEdible){
+				cout << " \\!/ ";
 			}
+			else{
+				cout << "  " << (char)232 << "  ";
+			}
+		}
+		else if(Pinky.locationX == i && Pinky.locationY == j){
+			if(Pinky.isEdible){
+				cout << " \\!/ ";
+			}
+			else{
+				cout << "  " << (char)232 << "  ";
+			}
+		}
+		else if(Inky.locationX == i && Inky.locationY == j){
+			if(Inky.isEdible){
+				cout << " \\!/ ";
+			}
+			else{
+				cout << "  " << (char)232 << "  ";
+			}
+		}
+		else if(Clyde.locationX == i && Clyde.locationY == j){
+			if(Clyde.isEdible){
+				cout << " \\!/ ";
+			}
+			else{
+				cout << "  " << (char)232 << "  ";
+			}
+		}
 		else{
 			if (GameBoard[i][j] == WALL) {
 				cout << (char)178 << (char)178 << (char)178 <<(char)178 << (char)178 ;
@@ -233,9 +259,6 @@ void Draw() {
 			else if (GameBoard[i][j] == EMPTY) {
 				cout << "     ";
 			}
-			/*else if (GameBoard[i][j] == PINKY || GameBoard[i][j] == INKY || GameBoard[i][j] == BLINKY || GameBoard[i][j] == CLYDE) {
-				cout << "GG";
-			}*/
 			else if (GameBoard[i][j] == PACMAN) {
 				cout << " " << (char)92<<(char)32<<(char)47<< " " ;
 			}
@@ -249,37 +272,40 @@ void Draw() {
 
 		cout << endl;
 		for (int j = 0; j < 19; j++) {
-			if((Blinky.locationX == i && Blinky.locationY == j)
-				||(Pinky.locationX == i && Pinky.locationY == j)
-				||(Inky.locationX == i && Inky.locationY == j)
-				||(Clyde.locationX == i && Clyde.locationY == j))	{
-				cout << " " << (char)47<<(char)95<<(char)92 << " ";
-				}
+			if(Blinky.locationX == i && Blinky.locationY == j){
+				cout << " /B\\ ";
+			}
+			else if(Pinky.locationX == i && Pinky.locationY == j){
+				cout << " /P\\ ";
+			}
+			else if(Inky.locationX == i && Inky.locationY == j){
+				cout << " /I\\ ";
+			}
+			else if(Clyde.locationX == i && Clyde.locationY == j){
+				cout << " /C\\ ";
+			}
 			else{
-			if (GameBoard[i][j] == WALL) {
-				cout << (char)178 << (char)178 << (char)178 <<(char)178 << (char)178;
-			}
-			else if (GameBoard[i][j] == DOT) {
-				cout << "  " << (char)248 << "  " ;
-			}
-			else if (GameBoard[i][j] == SPECIAL_DOT){
-				cout << "  " << (char)233 << "  " ;
-			}
-			else if (GameBoard[i][j] == EMPTY || GameBoard[i][j] == WRAPL || GameBoard[i][j] == WRAPR) {
-				cout << "     ";
-			}
-			/*else if (GameBoard[i][j] == PINKY || GameBoard[i][j] == INKY || GameBoard[i][j] == BLINKY || GameBoard[i][j] == CLYDE) {
-				cout << "GG";
-			}*/
-			else if (GameBoard[i][j] == PACMAN) {
-				cout << " " << (char)229<<(char)95<<(char)229<< " " ;
-			}
-			else if (GameBoard[i][j] == FRUIT) {
-				cout << " " << (char)220<<(char)220<<(char)220<< " " ;
-				noFruit = false;
+				if (GameBoard[i][j] == WALL) {
+					cout << (char)178 << (char)178 << (char)178 <<(char)178 << (char)178;
+				}
+				else if (GameBoard[i][j] == DOT) {
+					cout << "  " << (char)248 << "  " ;
+				}
+				else if (GameBoard[i][j] == SPECIAL_DOT){
+					cout << "  " << (char)233 << "  " ;
+				}
+				else if (GameBoard[i][j] == EMPTY || GameBoard[i][j] == WRAPL || GameBoard[i][j] == WRAPR) {
+					cout << "     ";
+				}
+				else if (GameBoard[i][j] == PACMAN) {
+					cout << " " << (char)229<<(char)95<<(char)229<< " " ;
+				}
+				else if (GameBoard[i][j] == FRUIT) {
+					cout << " " << (char)220<<(char)220<<(char)220<< " " ;
+					noFruit = false;
+				}
 			}
 		}
-	}
 	cout << endl;
 		for (int j = 0; j < 19; j++) {
 			if((Blinky.locationX == i && Blinky.locationY == j)
