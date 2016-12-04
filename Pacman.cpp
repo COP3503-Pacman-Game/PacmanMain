@@ -20,8 +20,7 @@ score board
 #include <Windows.h>
 using namespace std;
 
-
-
+int edibleCounter = 0;
 int counter;
 bool gameOver = false;
 bool leavegame = false;
@@ -127,8 +126,16 @@ srand(time(NULL));
 			locationY--;
 		}
 
-		if(locationX == pacman.locationRow && locationY == pacman.locationCol){
+		if(locationX == pacman.locationRow && locationY == pacman.locationCol && isEdible == false){
 			gameOver=true;
+			direction = HOLD;
+			Sleep(1000);
+		}
+
+		else if(locationX == pacman.locationRow && locationY == pacman.locationCol && isEdible == true){
+			locationX=9;
+			locationY=9;
+			isEdible = false;
 		}
 
 	}
@@ -160,7 +167,10 @@ void Setup() {
 	pacman.locationCol = 9;
 
 	GameBoard[16][9] = PACMAN;
-
+	GameBoard[3][1] = SPECIAL_DOT;
+	GameBoard[3][17] = SPECIAL_DOT;
+	GameBoard[16][1] = SPECIAL_DOT;
+	GameBoard[16][17] = SPECIAL_DOT;
 	//GameBoard[Blinky.locationX][Blinky.locationY] = BLINKY;
 	//GameBoard[Pinky.locationX][Pinky.locationY] = PINKY;
 	//GameBoard[Inky.locationX][Inky.locationY] = INKY;
@@ -237,12 +247,38 @@ void Draw() {
 		cout << endl;
 		for (int j = 0; j < 19; j++) {
 			if((Blinky.locationX == i && Blinky.locationY == j)
-				||(Pinky.locationX == i && Pinky.locationY == j)
-				||(Inky.locationX == i && Inky.locationY == j)
-				||(Clyde.locationX == i && Clyde.locationY == j))	{
-				cout << " " << (char)47<<(char)95<<(char)92 << " ";
-				}
-			else{
+			||(Pinky.locationX == i && Pinky.locationY == j)
+			||(Inky.locationX == i && Inky.locationY == j)
+			||(Clyde.locationX == i && Clyde.locationY == j))	{
+			cout << " " << (char)32<<(char)232<<(char)32 << " ";
+			}
+			/*
+			if(Blinky.locationX == i && Blinky.locationY == j && Blinky.isEdible == false){
+				cout << (char)32<<(char)232<<(char)32;
+			}
+			if(Blinky.locationX == i && Blinky.locationY == j && Blinky.isEdible == true){
+				cout << " !!! ";
+			}
+			if(Inky.locationX == i && Inky.locationY == j && Inky.isEdible == false){
+				cout << (char)32<<(char)232<<(char)32;
+			}
+			if(Inky.locationX == i && Inky.locationY == j && Inky.isEdible == true){
+				cout << " !!! ";
+			}
+			if(Pinky.locationX == i && Pinky.locationY == j && Pinky.isEdible == false){
+				cout << (char)32<<(char)232<<(char)32;
+			}
+			if(Pinky.locationX == i && Pinky.locationY == j && Pinky.isEdible == true){
+				cout << " !!! ";
+			}
+			if(Clyde.locationX == i && Clyde.locationY == j && Clyde.isEdible == false){
+				cout << (char)32<<(char)232<<(char)32;
+			}
+			if(Clyde.locationX == i && Clyde.locationY == j && Clyde.isEdible == true){
+				cout << " !!! ";
+			}
+			*/
+		else{
 			if (GameBoard[i][j] == WALL) {
 				cout << (char)178 << (char)178 << (char)178 <<(char)178 << (char)178;
 			}
@@ -269,13 +305,13 @@ void Draw() {
 	}
 	cout << endl;
 		for (int j = 0; j < 19; j++) {
-			if((Blinky.locationX == i && Blinky.locationY == j)
-				||(Pinky.locationX == i && Pinky.locationY == j)
-				||(Inky.locationX == i && Inky.locationY == j)
-				||(Clyde.locationX == i && Clyde.locationY == j))	{
-				cout << " " << (char)32<<(char)32<<(char)32<< " " ;
-				}
-			else{
+		if((Blinky.locationX == i && Blinky.locationY == j)
+			||(Pinky.locationX == i && Pinky.locationY == j)
+			||(Inky.locationX == i && Inky.locationY == j)
+			||(Clyde.locationX == i && Clyde.locationY == j))	{
+			cout << " " << (char)32<<(char)232<<(char)32 << " ";
+			}
+		else{
 			if (GameBoard[i][j] == WALL) {
 				cout << (char)178 << (char)178 << (char)178 <<(char)178 << (char)178;
 			}
@@ -313,6 +349,25 @@ void Draw() {
 	if (counter == 20){
 		generateFruit();
 		counter = 0;
+	}
+
+	if(ghostEdibleMode == true){
+		if (edibleCounter == 20){
+			Blinky.isEdible = true;
+			Inky.isEdible = true;
+			Pinky.isEdible = true;
+			Clyde.isEdible = true;
+		}
+		edibleCounter--;
+	}
+
+	if(edibleCounter == 0){
+		ghostEdibleMode = false;
+		Blinky.isEdible = false;
+		Inky.isEdible = false;
+		Pinky.isEdible = false;
+		Clyde.isEdible = false;
+		edibleCounter = 20;
 	}
 
 }
@@ -439,7 +494,6 @@ void Logic() {
 				case 'r':
 					direction = HOLD;
 					validInput = true;
-					cout << "RESUME" << endl;
 					break;
 				default:
 					validInput = false;
