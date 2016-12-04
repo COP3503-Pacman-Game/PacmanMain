@@ -11,7 +11,10 @@ fruit repawn - done
 ghost characters - done
 special dot - done
 pacman characters - done
-ghost speed`
+ghost speed = done
+edible fixed
+
+
 score board
 */
 
@@ -129,7 +132,7 @@ srand(time(NULL));
 		}
 
 		if(locationX == pacman.locationRow && locationY == pacman.locationCol && isEdible == false){
-			Draw();
+			//Draw();
 			gameOver=true;
 			direction = HOLD;
 			Sleep(1000);
@@ -422,14 +425,21 @@ void Input() {
 				break;
 			}
 		}
-		if(direction != -1 && ghostTimer%2 == 0){
-		Blinky.mover(pacman.locationCol, pacman.locationRow);
-		Pinky.mover(pacman.locationCol, pacman.locationRow);
-		Inky.mover(pacman.locationCol, pacman.locationRow);
-		Clyde.mover(pacman.locationCol, pacman.locationRow);
-}
+		if(direction != -1 && (ghostTimer*2)%3 != 0){
+			Blinky.mover(pacman.locationCol, pacman.locationRow);
+			if (ghostTimer>20)
+				Pinky.mover(pacman.locationCol, pacman.locationRow);
+			if (ghostTimer>10)
+				Inky.mover(pacman.locationCol, pacman.locationRow);
+			if (ghostTimer>30)
+				Clyde.mover(pacman.locationCol, pacman.locationRow);
+		}
+		if (direction != -1)
+		ghostTimer++;
+
 	Sleep(100);
-	ghostTimer+=3;
+
+	
 	}
 
 
@@ -507,7 +517,7 @@ void Logic() {
 				case 'r':
 					direction = HOLD;
 					validInput = true;
-					system("cls");
+					system("clsx");
 					break;
 				default:
 					validInput = false;
@@ -520,6 +530,31 @@ void Logic() {
 		//cout << "Something went wrong" << endl;
 		break;
 	}
+	if (pacman.locationRow == Blinky.locationX && pacman.locationCol == Blinky.locationY && Blinky.isEdible){
+		Blinky.locationX = 10;
+		Blinky.locationY = 9;
+		Blinky.isEdible = false;
+		score+=100;
+	}
+	if (pacman.locationRow == Pinky.locationX && pacman.locationCol == Pinky.locationY && Pinky.isEdible){
+		Pinky.locationX = 10;
+		Pinky.locationY = 9;
+		Pinky.isEdible = false;
+		score+=100;
+	}
+		if (pacman.locationRow == Inky.locationX && pacman.locationCol == Inky.locationY && Inky.isEdible){
+		Inky.locationX = 10;
+		Inky.locationY = 9;
+		Inky.isEdible = false;
+		score+=100;
+	}
+		if (pacman.locationRow == Clyde.locationX && pacman.locationCol == Clyde.locationY && Clyde.isEdible){
+		Clyde.locationX = 10;
+		Clyde.locationY = 9;
+		Clyde.isEdible = false;
+		score+=100;
+	}
+
 }
 
 int main()
@@ -533,7 +568,7 @@ int main()
 			Input();
 			Logic();
 			clearScreen();
-			Draw();
+			Draw();			
 			
 			if(gameOver == true && direction == WIN_GAME){
 				system("cls");
