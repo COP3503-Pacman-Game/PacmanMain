@@ -11,13 +11,19 @@ fruit repawn - done
 ghost characters - done
 special dot - done
 pacman characters - done
-ghost speed = done
-edible fixed
-
-
+ghost speed`
 score board
 */
 
+#include <iostream>
+#include <math.h>
+#include <vector>
+#include <stdbool.h>
+#include <fstream>
+#include <string>
+#include <stdlib.h>
+#include <cmath>
+#include <ctime>
 #include "Pacman.h"
 #include <conio.h>
 #include <Windows.h>
