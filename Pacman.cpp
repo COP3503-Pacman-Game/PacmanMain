@@ -8,10 +8,10 @@
 
 /*  TO_DO
 fruit repawn - done
+ghost characters - done
+special dot - done
+pacman characters - done
 ghost speed`
-ghost characters`
-special dot 
-pacman characters
 score board
 */
 
