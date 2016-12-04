@@ -507,6 +507,7 @@ void Logic() {
 				case 'r':
 					direction = HOLD;
 					validInput = true;
+					system("cls");
 					break;
 				default:
 					validInput = false;
