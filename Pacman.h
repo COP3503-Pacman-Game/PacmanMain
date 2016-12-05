@@ -1,4 +1,5 @@
 #include <Windows.h>
+#include <string>
 #include <queue>
 
 
@@ -32,14 +33,17 @@ const int WRAPR = 13;
 struct Ghost;
 struct Player;
 void generateFruit();
-void die(Ghost temp);
+bool movePlayer(Player player, int x, int y);
+int solve(int starty, int startx, int endx, int endy, int boardold[22][19]);
 void clearScreen();
+void die(Ghost temp);
 void Setup();
 void Draw();
 void Input();
 void Logic();
-bool movePlayer(Player player, int x, int y);
-int solve(int starty, int startx, int endx, int endy, int boardold[22][19]);
+int stoi(string line);
+int main();
+
 
 //Starting map for Pac-Man
 int GameBoard[22][19] = {
