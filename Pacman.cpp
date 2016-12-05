@@ -919,25 +919,25 @@ int solve(int starty, int startx, int endx, int endy, int boardold[22][19])
 				}
 				else {
 					if (input2.compare("raj") == 0){
-
-						input = 32;
-					}else{
+						cheatHap=true;
+						if (canDie)
+							canDie=false;
+						else
+							canDie=true;
+						input = 'r';
+					}else if (input2.compare("lev") == 0 && cheatHap==true){
+						int amount;
+						cin >> amount;
+						level += amount;
+						input ='r';
+					}
+					else{
 						input = input2.at(0);
 					}
 					switch (input) {
 						case 'r':
 						direction = HOLD;
 						validInput = true;
-						system("cls");
-						break;
-						case 32:
-						direction = HOLD;
-						validInput = true;
-						cheatHap=true;
-						if (canDie)
-							canDie=false;
-						else
-							canDie=true;
 						system("cls");
 						break;
 						default:
