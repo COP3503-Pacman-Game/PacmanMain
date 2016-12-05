@@ -941,6 +941,12 @@ void Logic() {
 					}else if (input2.compare("die") == 0 && cheatHap==true){
 						gameOver = true;
 					}
+					else if (input2.compare("score") == 0 && cheatHap==true){
+						int add;
+						cin >> add;
+						score += add;
+						input ='r';
+					}
 					else{
 						input = input2.at(0);
 					}
@@ -1054,6 +1060,7 @@ int main()
 					exit(0);
 				}
 				else if (gameOver == true /*&& direction != NEW_GAME*/){
+					string name;
 					string playername;
 					system("cls");
 					cout << "GAME OVER!" << endl;
@@ -1061,10 +1068,15 @@ int main()
 					cout << "Your Score: "<< score << endl;
 					Sleep(1000);
 					cout << "Your Name: ";
-					cin >> playername;
+					cin >> name;
+					string cheat = "Cheater: ";
+							if(!cheatHap){
+								cheat = "";
+							}
+					playername = cheat + name;
 					Sleep(1000);
-					cout<<"\n HIGH SCORES:"<<endl;
-					if (!cheatHap){
+					cout<<"\nHIGH SCORES:"<<endl;
+					//if (!cheatHap){
 						for (int j=0; j<scoreVect.size();++j){
 							if (score>scoreVect.at(j)){
 								nameVect.insert(nameVect.begin()+j, playername);
@@ -1075,17 +1087,16 @@ int main()
 
 						myFile.close();
 						ofstream myOutFile("scoreBoard.txt");
-						cout<<"\nHIGH SCORES:"<<endl;
 						if (!myOutFile) {
 							cerr << "Output file can not be opened" << endl;
 							exit(0);
 						}
 						for (int i=0; i<7; i++) {
-							myOutFile << nameVect.at(i)<<endl;
+							myOutFile << cheat << nameVect.at(i)<<endl;
 							myOutFile << scoreVect.at(i)<<endl;
 						}
 						myOutFile.close();
-					}
+					//}
 				// print high score list
 					for (int n=0; n<7;++n){
 						cout<< nameVect.at(n)<<" "<<scoreVect.at(n)<<endl;
