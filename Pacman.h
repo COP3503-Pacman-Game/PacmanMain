@@ -32,6 +32,13 @@ const int PACMAN = 11;
 const int WRAPL = 12;
 const int WRAPR = 13;
 
+struct Ghost;
+void die(Ghost temp);
+void Setup();
+void Draw();
+void Input();
+void Logic();
+
 //Starting map for Pac-Man
 int GameBoard[22][19] = {
 	{ WALL  ,WALL  ,WALL  ,WALL  ,WALL  ,WALL  ,WALL  ,WALL  ,WALL  ,WALL  ,WALL  ,WALL  ,WALL  ,WALL  ,WALL  ,WALL  ,WALL  ,WALL  ,WALL },

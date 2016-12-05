@@ -35,6 +35,7 @@ bool gameOver = false;
 bool leavegame = false;
 bool validInput;
 char input;
+int live = 3;
 int direction = -1;
 
 
@@ -42,6 +43,7 @@ Player pacman;
 
 struct Ghost
 {
+
 	int speed, pointValue, locationX, locationY, style, dir;
 	bool isEdible;
 	Ghost()
@@ -79,26 +81,27 @@ bool inColRow(){
 }
 
  void	*mover(int endx, int endy){
+		die(*this);
  		int board[22][19];
  		for (int i=0;i<22;i++)
  			for (int j=0;j<19;j++)
  				board[i][j]=GameBoard[i][j];
  			vector<int> ways;
  			ways.clear();
-if (dir!=RIGHT && locationY-1>=0 && GameBoard[locationX][locationY-1]!=WALL && (!isEdible || locationY <= pacman.locationCol || !inColRow())){
-	ways.push_back(LEFT);
-}
-if (dir!=LEFT && locationY+1<19 && GameBoard[locationX][locationY+1]!=WALL && (!isEdible || locationY >= pacman.locationCol || !inColRow())){
-	ways.push_back(RIGHT);
-}
-if (dir!=DOWN && locationX-1>=0 && GameBoard[locationX-1][locationY]!=WALL && (!isEdible || locationX <= pacman.locationRow || !inColRow())){
-	ways.push_back(UP);
-}
-if (dir!=UP && locationX+1<22 && GameBoard[locationX+1][locationY]!=WALL&& (!isEdible || locationX >= pacman.locationRow || !inColRow())){
-	ways.push_back(DOWN);
-}
-int move;
-srand(time(NULL));
+		if (dir!=RIGHT && locationY-1>=0 && GameBoard[locationX][locationY-1]!=WALL && (!isEdible || locationY <= pacman.locationCol || !inColRow())){
+			ways.push_back(LEFT);
+		}
+		if (dir!=LEFT && locationY+1<19 && GameBoard[locationX][locationY+1]!=WALL && (!isEdible || locationY >= pacman.locationCol || !inColRow())){
+			ways.push_back(RIGHT);
+		}
+		if (dir!=DOWN && locationX-1>=0 && GameBoard[locationX-1][locationY]!=WALL && (!isEdible || locationX <= pacman.locationRow || !inColRow())){
+			ways.push_back(UP);
+		}	
+		if (dir!=UP && locationX+1<22 && GameBoard[locationX+1][locationY]!=WALL&& (!isEdible || locationX >= pacman.locationRow || !inColRow())){
+			ways.push_back(DOWN);
+		}
+	int move;
+	srand(time(NULL));
 	if (ways.empty()){
 		move=(dir+2)%4;
 	}else
@@ -137,19 +140,7 @@ srand(time(NULL));
 			locationY--;
 		}
 
-		if(locationX == pacman.locationRow && locationY == pacman.locationCol && isEdible == false){
-			//Draw();
-			gameOver=true;
-			direction = HOLD;
-			Sleep(1000);
-		}
-
-		else if(locationX == pacman.locationRow && locationY == pacman.locationCol && isEdible == true){
-			locationX=9;
-			locationY=9;
-			isEdible = false;
-		}
-
+		die(*this);
 	}
 
 
@@ -160,6 +151,41 @@ Ghost Blinky;
 Ghost Pinky;
 Ghost Inky;
 Ghost Clyde;
+
+void die(Ghost temp){
+
+		if(temp.locationX == pacman.locationRow && temp.locationY == pacman.locationCol && temp.isEdible == false){
+			//Draw();
+			Sleep(1000);
+			live--;
+			GameBoard[pacman.locationRow][pacman.locationCol] = EMPTY;
+			pacman.locationRow = 16;
+			pacman.locationCol = 9;
+			GameBoard[pacman.locationRow][pacman.locationCol] = PACMAN;
+			ghostTimer=0;
+			Blinky.locationX = 9;
+			Blinky.locationY = 9;
+			Pinky.locationX = 10;
+			Pinky.locationY = 8;
+			Inky.locationX = 10;
+			Inky.locationY = 9;
+			Clyde.locationX = 10;
+			Clyde.locationY = 10;
+			pacman.locationRow = 16;
+			pacman.locationCol = 9;
+			direction = -1;
+			if (live == 0)
+			gameOver=true;
+			//direction = HOLD;
+			//Sleep(1000);
+		}
+
+		else if(temp.locationX == pacman.locationRow && temp.locationY == pacman.locationCol && temp.isEdible == true){
+			temp.locationX=9;
+			temp.locationY=9;
+			temp.isEdible = false;
+		}
+	}
 
 void Setup() {
 	score = 0;
@@ -221,6 +247,7 @@ void Draw() {
 	bool noSpecialDot = true;
 	bool noFruit = true;
 	cout << "SCORE: " << score << endl;
+	cout << "LIVES: " << live << endl;
 	//cout << "\t\tCOUNTER: " << counter << endl;
 	for (int i = 0; i < 22; i++) {
 		for (int j = 0; j < 19; j++) {
@@ -523,7 +550,7 @@ void Logic() {
 				case 'r':
 					direction = HOLD;
 					validInput = true;
-					system("clsx");
+					system("cls");
 					break;
 				default:
 					validInput = false;
@@ -597,6 +624,7 @@ int main()
 		cout << "Press y to play again..." << endl;
 		cin >> input;
 		if (input == 'y') {
+			live = 3;
 			direction = -1;
 			gameOver = false;
 			GameBoard[pacman.locationRow][pacman.locationCol] = DOT;
