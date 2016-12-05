@@ -24,7 +24,9 @@ bool leavegame = false;
 bool validInput;
 bool canDie = true;
 bool ghostEdibleMode = false;
+bool cheatHap = false;
 char input;
+string input2;
 
 //CODES IN COMMENTS ARE FOR BUG TESTING ****KEEP****
 
@@ -95,14 +97,14 @@ char input;
 		return false;
 	}
 	else if (element == DOT) {
-		score += 10;
+		score++;
 	}
 	else if (element == SPECIAL_DOT) {
-		score += 50;
+		score+=10;
 		ghostEdibleMode = true;
 	}
 	else if (element == FRUIT) {
-		score += 100;
+		score += 10;
 	}
 
 	GameBoard[player.locationRow][player.locationCol] = EMPTY;   //current position in GameBoard becomes empty
@@ -628,9 +630,10 @@ int solve(int starty, int startx, int endx, int endy, int boardold[22][19])
 			bool noDot = true;
 			bool noSpecialDot = true;
 			bool noFruit = true;
+			
+			cout << "SCORE: " << score << endl;
 			if (canDie)
-				cout << "SCOREs: " << score << endl;
-			cout << "LIVES: " << live << endl;
+				cout << "LIVES: " << live << endl;
 			cout << "LEVEL: " << level << endl;
 			if (!canDie)
 				cout<< "CHEAT ACTIVE"<<endl;
@@ -810,13 +813,6 @@ if(edibleCounter == 0){
 void Input() {
 	if (_kbhit()){
 		switch (_getch()) {
-			case 'c':
-			if (canDie)
-				canDie=false;
-			else
-				canDie=true;
-			system("cls");
-			break;
 			case 'n':
 			direction = NEW_GAME;
 			validInput = true;
@@ -931,7 +927,7 @@ void Logic() {
 		validInput = false;
 		cout << "Press r to RESUME" << endl;
 		while (validInput == false) {
-			cin >> input;
+			cin >> input2;
 			if (cin.fail()) {
 				cin.clear();
 				cin.ignore(256, '\n');
@@ -939,10 +935,26 @@ void Logic() {
 				cout << "cin failed" << endl;
 			}
 			else {
+				if (input2.compare("raj") == 0){
+
+					input = 32;
+				}else{
+					input = input2.at(0);
+				}
 				switch (input) {
 					case 'r':
 					direction = HOLD;
 					validInput = true;
+					system("cls");
+					break;
+					case 32:
+					direction = HOLD;
+					validInput = true;
+					cheatHap=true;
+					if (canDie)
+						canDie=false;
+					else
+						canDie=true;
 					system("cls");
 					break;
 					default:
@@ -950,6 +962,7 @@ void Logic() {
 					break;
 				}
 			}
+			
 		}
 		break;
 		case HOLD:
@@ -960,25 +973,25 @@ void Logic() {
 		Blinky.locationX = 10;
 		Blinky.locationY = 9;
 		Blinky.isEdible = false;
-		score+=200;
+		score+=100;
 	}
 	if (pacman.locationRow == Pinky.locationX && pacman.locationCol == Pinky.locationY && Pinky.isEdible){
 		Pinky.locationX = 10;
 		Pinky.locationY = 9;
 		Pinky.isEdible = false;
-		score+=200;
+		score+=100;
 	}
 	if (pacman.locationRow == Inky.locationX && pacman.locationCol == Inky.locationY && Inky.isEdible){
 		Inky.locationX = 10;
 		Inky.locationY = 9;
 		Inky.isEdible = false;
-		score+=200;
+		score+=100;
 	}
 	if (pacman.locationRow == Clyde.locationX && pacman.locationCol == Clyde.locationY && Clyde.isEdible){
 		Clyde.locationX = 10;
 		Clyde.locationY = 9;
 		Clyde.isEdible = false;
-		score+=2;
+		score+=100;
 	}
 
 }
@@ -1017,6 +1030,7 @@ int main()
 
 
 	char input;
+	string input2;
 	do {
 		Setup();
 		while (gameOver == false)
@@ -1053,29 +1067,31 @@ int main()
 				cout << "Your Name: ";
 				cin >> playername;
 				Sleep(1000);
-				for (int j=0; j<scoreVect.size();++j){
-					if (score>scoreVect.at(j)){
-						nameVect.insert(nameVect.begin()+j, playername);
-						scoreVect.insert(scoreVect.begin()+j, score);
-						break;
+				if (cheatHap){
+					for (int j=0; j<scoreVect.size();++j){
+						if (score>scoreVect.at(j)){
+							nameVect.insert(nameVect.begin()+j, playername);
+							scoreVect.insert(scoreVect.begin()+j, score);
+							break;
+						}
 					}
+
+					myFile.close();
+					ofstream myOutFile("scoreBoard.txt");
+					if (!myOutFile) {
+						cerr << "Output file can not be opened" << endl;
+						exit(0);
+					}
+					for (int i=0; i<7; i++) {
+						myOutFile << nameVect.at(i)<<endl;
+						myOutFile << scoreVect.at(i)<<endl;
+					}
+					myOutFile.close();
 				}
 				// print high score list
 				for (int n=0; n<7;++n){
 					cout<< nameVect.at(n)<<" "<<scoreVect.at(n)<<endl;
 				}
-				myFile.close();
-				ofstream myOutFile("scoreBoard.txt");
-				if (!myOutFile) {
-					cerr << "Output file can not be opened" << endl;
-					exit(0);
-				}
-				for (int i=0; i<7; i++) {
-					myOutFile << nameVect.at(i)<<endl;
-					myOutFile << scoreVect.at(i)<<endl;
-				}
-				myOutFile.close();
-
 				Sleep(1000);
 
 				cout << endl;
@@ -1084,6 +1100,8 @@ int main()
 				cin >> input;
 				if (input == 'y') {
 					live = 3;
+					cheatHap=false;
+					canDie=true;
 					direction = -1;
 					gameOver = false;
 					GameBoard[pacman.locationRow][pacman.locationCol] = DOT;
