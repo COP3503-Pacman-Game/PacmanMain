@@ -1092,7 +1092,7 @@ int main()
 							exit(0);
 						}
 						for (int i=0; i<7; i++) {
-							myOutFile << cheat << nameVect.at(i)<<endl;
+							myOutFile << nameVect.at(i)<<endl;
 							myOutFile << scoreVect.at(i)<<endl;
 						}
 						myOutFile.close();
