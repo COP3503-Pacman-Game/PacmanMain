@@ -10,7 +10,5 @@ player4
 200
 player5
 100
-parker
-5
-
-
+sadj
+10
