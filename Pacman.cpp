@@ -95,14 +95,14 @@ char input;
 		return false;
 	}
 	else if (element == DOT) {
-		score++;
+		score += 10;
 	}
 	else if (element == SPECIAL_DOT) {
-		score+=10;
+		score += 50;
 		ghostEdibleMode = true;
 	}
 	else if (element == FRUIT) {
-		score += 10;
+		score += 100;
 	}
 
 	GameBoard[player.locationRow][player.locationCol] = EMPTY;   //current position in GameBoard becomes empty
@@ -960,25 +960,25 @@ void Logic() {
 		Blinky.locationX = 10;
 		Blinky.locationY = 9;
 		Blinky.isEdible = false;
-		score+=100;
+		score+=200;
 	}
 	if (pacman.locationRow == Pinky.locationX && pacman.locationCol == Pinky.locationY && Pinky.isEdible){
 		Pinky.locationX = 10;
 		Pinky.locationY = 9;
 		Pinky.isEdible = false;
-		score+=100;
+		score+=200;
 	}
 	if (pacman.locationRow == Inky.locationX && pacman.locationCol == Inky.locationY && Inky.isEdible){
 		Inky.locationX = 10;
 		Inky.locationY = 9;
 		Inky.isEdible = false;
-		score+=100;
+		score+=200;
 	}
 	if (pacman.locationRow == Clyde.locationX && pacman.locationCol == Clyde.locationY && Clyde.isEdible){
 		Clyde.locationX = 10;
 		Clyde.locationY = 9;
 		Clyde.isEdible = false;
-		score+=100;
+		score+=2;
 	}
 
 }
