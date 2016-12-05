@@ -36,8 +36,9 @@ bool leavegame = false;
 bool validInput;
 char input;
 int live = 3;
+int level = 1;
 int direction = -1;
-
+bool canDie = true;
 
 Player pacman;
 
@@ -53,7 +54,7 @@ struct Ghost
 	}
 
 bool inColRow(){
-	for (int i=locationX;i<22-locationX;i++){
+	for (int i=locationX;i<22;i++){
 		if (GameBoard[i][locationY] == PACMAN)
 			return true;
 		else if(GameBoard[i][locationY] == WALL)
@@ -65,7 +66,7 @@ bool inColRow(){
 		else if(GameBoard[i][locationY] == WALL)
 			break;
 	}
-	for (int i=locationY;i<19-locationY;i++){
+	for (int i=locationY;i<19;i++){
 		if (GameBoard[locationX][i] == PACMAN)
 			return true;
 		else if (GameBoard[locationX][i] == WALL)
@@ -81,6 +82,7 @@ bool inColRow(){
 }
 
  void	*mover(int endx, int endy){
+ 		if (canDie)
 		die(*this);
  		int board[22][19];
  		for (int i=0;i<22;i++)
@@ -109,7 +111,7 @@ bool inColRow(){
 
 		if (!isEdible){
  			if (style  == 0){
- 				if (sqrt(pow(pacman.locationRow - locationX,2) + pow(pacman.locationCol - locationY,2) ) < 5)
+ 				if (sqrt(pow(pacman.locationRow - locationX,2) + pow(pacman.locationCol - locationY,2) ) < 5+level)
  					move = solve(locationX, locationY, endx, endy, board);
  				else if (inColRow())
  					move = solve(locationX, locationY, endx, endy, board);
@@ -139,7 +141,7 @@ bool inColRow(){
 			dir=3;
 			locationY--;
 		}
-
+		if (canDie)
 		die(*this);
 	}
 
@@ -188,7 +190,7 @@ void die(Ghost temp){
 	}
 
 void Setup() {
-	score = 0;
+	//score = 0;
 	ghostTimer=0;
 	Blinky.locationX = 9;
 	Blinky.locationY = 9;
@@ -246,8 +248,12 @@ void Draw() {
 	bool noDot = true;
 	bool noSpecialDot = true;
 	bool noFruit = true;
+	if (canDie)
 	cout << "SCORE: " << score << endl;
 	cout << "LIVES: " << live << endl;
+	cout << "LEVEL: " << level << endl;
+	if (!canDie)
+		cout<< "CHEAT ACTIVE"<<endl;
 	//cout << "\t\tCOUNTER: " << counter << endl;
 	for (int i = 0; i < 22; i++) {
 		for (int j = 0; j < 19; j++) {
@@ -424,6 +430,12 @@ void Draw() {
 void Input() {
 	if (_kbhit()){
 			switch (_getch()) {
+			case 'c':
+				if (canDie)
+					canDie=false;
+				else
+					canDie=true;
+				break;
 			case 'n':
 				direction = NEW_GAME;
 				validInput = true;
@@ -458,15 +470,15 @@ void Input() {
 				break;
 			}
 		}
-		if(direction != -1 && (ghostTimer*2)%3 != 0){
+		if(direction != -1 && (ghostTimer)%3 != 0)
 			Blinky.mover(pacman.locationCol, pacman.locationRow);
-			if (ghostTimer>20)
-				Pinky.mover(pacman.locationCol, pacman.locationRow);
-			if (ghostTimer>10)
-				Inky.mover(pacman.locationCol, pacman.locationRow);
-			if (ghostTimer>30)
-				Clyde.mover(pacman.locationCol, pacman.locationRow);
-		}
+		if (ghostTimer>20 && direction != -1 && (ghostTimer)%3 != 0)
+			Pinky.mover(pacman.locationCol, pacman.locationRow);
+		if (ghostTimer>10 && direction != -1 && (ghostTimer)%3 != 0)
+			Inky.mover(pacman.locationCol, pacman.locationRow);
+		if (ghostTimer>30 && direction != -1 && (ghostTimer)%3 != 0)
+			Clyde.mover(pacman.locationCol, pacman.locationRow);
+		
 		if (direction != -1)
 		ghostTimer++;
 
@@ -604,36 +616,55 @@ int main()
 			Draw();			
 			
 			if(gameOver == true && direction == WIN_GAME){
+				/*
 				system("cls");
 				cout << "CONGRATULATIONS YOU WIN!" << endl;
+				*/
 				Sleep(1000);
+				level++;
+				gameOver=false;
+				direction=-1;
+				GameBoard[pacman.locationRow][pacman.locationCol] = DOT;
+				Setup();
+
 			}
 			else if(gameOver == true && direction == QUIT){
 				exit(0);
 			}
 			else if (gameOver == true && direction != NEW_GAME){
+				string playername;
 				system("cls");
 				cout << "GAME OVER!" << endl;
 				Sleep(1000);
-				cout << "YOU SUCK" << endl;
+				cout << "Your Score: "<< score << endl;
 				Sleep(1000);
-			}
-		}
-		cout << endl;
-		cout << "Do you want to play another game?" << endl;
-		cout << "Press y to play again..." << endl;
-		cin >> input;
-		if (input == 'y') {
+				cout << "Your Name: ";
+				cin >> playername;
+				Sleep(1000);
+
+				// print high score list
+				Sleep(1000);
+
+				cout << endl;
+			cout << "Do you want to play another game?" << endl;
+			cout << "Press y to play again..." << endl;
+			cin >> input;
+			if (input == 'y') {
 			live = 3;
 			direction = -1;
 			gameOver = false;
 			GameBoard[pacman.locationRow][pacman.locationCol] = DOT;
+			score=0;
 			Setup();
+			}
+			else {
+			leavegame = true;
+			}
+		}
+		
 			
 		}
-		else {
-			leavegame = true;
-		}
+		
 
 	} while (leavegame == false);
 
