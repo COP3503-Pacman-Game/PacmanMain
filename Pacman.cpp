@@ -1078,6 +1078,8 @@ int solve(int starty, int startx, int endx, int endy, int boardold[22][19])
 					Sleep(1000);
 
 					cout << endl;
+					if (cheatHap)
+					cout<< "You cheated...";
 					cout << "Do you want to play another game?" << endl;
 					cout << "Press y to play again..." << endl;
 					cin >> input;
@@ -1089,6 +1091,7 @@ int solve(int starty, int startx, int endx, int endy, int boardold[22][19])
 						gameOver = false;
 						GameBoard[pacman.locationRow][pacman.locationCol] = DOT;
 						score=0;
+						system("cls");
 						Setup();
 					}
 					else {
