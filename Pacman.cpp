@@ -117,19 +117,23 @@ bool movePlayer(Player player, int x, int y)
 
 int solve(int starty, int startx, int endx, int endy, int boardold[22][19]) 
 {
+
+
+	// Board set up
 	int board[22][19];
 
-
-	//1,1 3,1 1,20
+	// startx and starty rotated for the rotated axis
 	int temp=starty;
 	starty=18-startx;
 	startx=temp;
 
-	//9,16 16,9
+	//endx and endy rotated for the rotated axis
 	temp=endy;
 	endy=18-endx;
 	endx=temp;
 
+
+// Make the sent board a non pointed board and able to be changed and change all unnecessary values to 1
 	for (int i = 0; i < 22; i++)
 		for (int j = 0; j < 19; j++)
 			if (boardold[i][j] > 0)
@@ -137,26 +141,29 @@ int solve(int starty, int startx, int endx, int endy, int boardold[22][19])
 			else
 				board[i][j] = 0;
 
+
+// path and destroy queues
 			queue<int> Xloc;
 			queue<int> Yloc;
 			queue<int> Xdes;
 			queue<int> Ydes;
-	//vector<int> moves;
+
+// board size
 			int sizex=22;
 			int sizey=19;
-	//int startx=0;
-	//int starty=0;
-	//int endx=sizex-1;
-	//int endy=sizey-1;
+
+// variable declarations
 			int i;
 			int j;
 			int X;
 			int Y;
-	//int board[sizex][sizey];
+
+// Make starting point 
 			Xloc.push(startx);
 			Yloc.push(starty);
 			board[startx][starty]=2;
 	//board[endx][endy]=9;
+
 	/*
 	for(int j=0; j<19; j++) {
 		for(int i=0; i<22; i++) {
@@ -168,60 +175,64 @@ int solve(int starty, int startx, int endx, int endy, int boardold[22][19])
 		cout<<endl;
 		}
 	*/
-		while(!Xloc.empty()){
-			bool nott = true;
-			X = Xloc.front();
-			Xloc.pop();
-			Y = Yloc.front();
-			Yloc.pop();
+
+// breadth first search outward making all possible paths to end			
+			while(!Xloc.empty()){
+				bool nott = true;
+				X = Xloc.front();
+				Xloc.pop();
+				Y = Yloc.front();
+				Yloc.pop();
+
+// checks cardinal directions for empty space
 		//left
 		// cout<<X<<" "<<Y<<" ";
-			if (X-1>=0 && board[X-1][Y]==1 )
-			{
+				if (X-1>=0 && board[X-1][Y]==1 )
+				{
 			//cout<<"got left ";
-				board [X-1][Y] =board[X][Y]+1;
-				if (!(X-1==endx && Y==endy)){
-					Xloc.push(X-1);
-					Yloc.push(Y);
+					board [X-1][Y] =board[X][Y]+1;
+					if (!(X-1==endx && Y==endy)){
+						Xloc.push(X-1);
+						Yloc.push(Y);
+					}
+					nott = false;
 				}
-				nott = false;
-			}
 			//up
-			if (Y-1>=0 && board[X][Y-1]==1){
+				if (Y-1>=0 && board[X][Y-1]==1){
 				//cout<<"got up ";
-				board [X][Y-1] =board[X][Y]+1;
-				if (!(X==endx && Y-1==endy)){
-					Xloc.push(X);
-					Yloc.push(Y-1);
+					board [X][Y-1] =board[X][Y]+1;
+					if (!(X==endx && Y-1==endy)){
+						Xloc.push(X);
+						Yloc.push(Y-1);
+					}
+					nott = false;
 				}
-				nott = false;
-			}
 			//right
-			if (X+1<sizex && board[X+1][Y]==1){
+				if (X+1<sizex && board[X+1][Y]==1){
 				//cout<<"got right ";
-				board [X+1][Y] =board[X][Y]+1;
-				if (!(X+1==endx && Y==endy)){
-					Xloc.push(X+1);
-					Yloc.push(Y);
+					board [X+1][Y] =board[X][Y]+1;
+					if (!(X+1==endx && Y==endy)){
+						Xloc.push(X+1);
+						Yloc.push(Y);
+					}
+					nott = false;
 				}
-				nott = false;
-			}
 			//down
-			if (Y+1<sizey && board[X][Y+1]==1){
-				board [X][Y+1] =board[X][Y]+1;
+				if (Y+1<sizey && board[X][Y+1]==1){
+					board [X][Y+1] =board[X][Y]+1;
 				//cout<<"got down ";
-				if (!(X==endx && Y+1==endy)){
+					if (!(X==endx && Y+1==endy)){
 					//cout<<Y+1<<endl;
-					Xloc.push(X);
-					Yloc.push(Y+1);
+						Xloc.push(X);
+						Yloc.push(Y+1);
+					}
+					nott = false;
 				}
-				nott = false;
-			}
 			//cout<<endl;
-			if (nott){
-				Xdes.push(X);
-				Ydes.push(Y);
-			}else{
+				if (nott){
+					Xdes.push(X);
+					Ydes.push(Y);
+				}else{
 				/*
 				 for (i=0;i<sizex;i++){
 				 for (j=0;j<sizey;j++)
@@ -255,51 +266,59 @@ int solve(int starty, int startx, int endx, int endy, int boardold[22][19])
 			cout<<XD<<" "<<YD<<" "<<board[XD][YD]<<endl;
 		}
 		*/
-		while (!Xdes.empty()){
-			int XD = Xdes.front();
-			Xdes.pop();
-			int YD = Ydes.front();
-			Ydes.pop();
-			bool kill = true;
+
+// breadth first search to destroy all useless paths to end
+			while (!Xdes.empty()){
+				int XD = Xdes.front();
+				Xdes.pop();
+				int YD = Ydes.front();
+				Ydes.pop();
+				bool kill = true;
+
+// checks cardinal directions for value larger than current value at position				
 			//left
-			if (XD-1>=0 && board[XD-1][YD]>board[XD][YD] ){
-				kill=false;
-			}
+				if (XD-1>=0 && board[XD-1][YD]>board[XD][YD] ){
+					kill=false;
+				}
 			//up
-			if (YD-1>=0 && board[XD][YD-1]>board[XD][YD] ){
-				kill=false;
-			}
+				if (YD-1>=0 && board[XD][YD-1]>board[XD][YD] ){
+					kill=false;
+				}
 			//right
-			if (XD+1<sizex && board[XD+1][YD]>board[XD][YD] ){
-				kill=false;
-			}
+				if (XD+1<sizex && board[XD+1][YD]>board[XD][YD] ){
+					kill=false;
+				}
 			//down
-			if (YD+1<sizey && board[XD][YD+1]>board[XD][YD] ){
-				kill=false;
-			}
-			if (!(XD==endx && YD==endy) ){
-				if (kill){
+				if (YD+1<sizey && board[XD][YD+1]>board[XD][YD] ){
+					kill=false;
+				}
+
+// destroys position into wall if no value in cardinal directions is larger
+				if (!(XD==endx && YD==endy) ){
+					if (kill){
 				//cout<<XD<<" "<<YD<<" "<<board[XD][YD]<<endl;
-					board[XD][YD]=0;
-					
-					if (XD-1>=0 && board[XD-1][YD]!=0){
-						Xdes.push(XD-1);
-						Ydes.push(YD);
-					}
-					if (YD-1>=0 && board[XD][YD-1]!=0){
-						Xdes.push(XD);
-						Ydes.push(YD-1);
-					}
-					if (XD+1<sizex && board[XD+1][YD]!=0){
-						Xdes.push(XD+1);
-						Ydes.push(YD);
-					}
-					if (YD+1<sizey && board[XD][YD+1]!=0){
-						Xdes.push(XD);
-						Ydes.push(YD+1);
+						board[XD][YD]=0;
+
+
+// sends every direction to the destroy method unless it is wall
+						if (XD-1>=0 && board[XD-1][YD]!=0){
+							Xdes.push(XD-1);
+							Ydes.push(YD);
+						}
+						if (YD-1>=0 && board[XD][YD-1]!=0){
+							Xdes.push(XD);
+							Ydes.push(YD-1);
+						}
+						if (XD+1<sizex && board[XD+1][YD]!=0){
+							Xdes.push(XD+1);
+							Ydes.push(YD);
+						}
+						if (YD+1<sizey && board[XD][YD+1]!=0){
+							Xdes.push(XD);
+							Ydes.push(YD+1);
+						}
 					}
 				}
-			}
 			/*
 			for(int j=0; j<19; j++) {
 				for(int i=0; i<22; i++) {
@@ -324,89 +343,46 @@ int solve(int starty, int startx, int endx, int endy, int boardold[22][19])
 			cout<<endl;
 		*/
 
-		}
+			}
 
-		vector <int>moves ;
-		int curx=startx;
-		int cury=starty;
+			int curx=startx;
+			int cury=starty;
+// check the cardinal directions for which path is still avaiable.
 		//left=0
-		if (curx-1>=0 && board[curx-1][cury]>board[curx][cury] ){
-			curx-=1;
-		   // cout<<"left";
-			return 0;
-		}
-		//up=1
-		else if (cury-1>=0 && board[curx][cury-1]>board[curx][cury] ){
-			cury-=1;
-		   // cout<<"up";
-			return 1;
-		}
-		//right=2
-		else if (curx+1<sizex && board[curx+1][cury]>board[curx][cury] ){
-			curx+=1;
-		   // cout<<"right";
-			return 2;
-		}
-		//down=3
-		else if (cury+1<sizey && board[curx][cury+1]>board[curx][cury] ){
-			cury+=1;
-		   // cout<<"down";
-			return 3;
-		}
-		else
-		{
-			return -1;
-		}
-		while(curx!=endx || cury!=endy){
-			//left=0
-			//cout<< curx <<" "<<cury<<endl;
 			if (curx-1>=0 && board[curx-1][cury]>board[curx][cury] ){
-				board[curx][cury]=-1;
 				curx-=1;
-			  //  cout<<"left";
-				moves.push_back(0);
+		   // cout<<"left";
+				return 0;
 			}
-			//up=1
+		//up=1
 			else if (cury-1>=0 && board[curx][cury-1]>board[curx][cury] ){
-				board[curx][cury]=-1;
 				cury-=1;
-				//cout<<"up";
-				moves.push_back(1);
+		   // cout<<"up";
+				return 1;
 			}
-			//right=2
+		//right=2
 			else if (curx+1<sizex && board[curx+1][cury]>board[curx][cury] ){
-				board[curx][cury]=-1;
 				curx+=1;
-			   // cout<<"right";
-				moves.push_back(2);
+		   // cout<<"right";
+				return 2;
 			}
-			//down=3
+		//down=3
 			else if (cury+1<sizey && board[curx][cury+1]>board[curx][cury] ){
-				board[curx][cury]=-1;
 				cury+=1;
-			   // cout<<"down";
-				moves.push_back(3);
-			}else{
-				//cout<<"error in path"<<endl;
-				break;
-
+		   // cout<<"down";
+				return 3;
 			}
+			else
+			{
+				return -1;
+			}
+			
 
+
+		//cout<<"Finished solve";
 
 		}
-		//cout<<"Finished solve";
-		/*
-		 while(true){
-		 repaint();
-		 try{
-		 t1.sleep(50);
-		 }
-		 catch(InterruptedException e){}
-		 }
-		 */
 
-		 return moves.at(0);
-}
 
 /*
 	Moves cursor to top left of screen in order to prepare for next Draw call.
@@ -465,45 +441,51 @@ struct Ghost
 		}
 		return false;
 	}
-	void *mover(int endx, int endy){
-		if (canDie)
-				die(*this);
-			int board[22][19];
-			for (int i=0;i<22;i++)
-				for (int j=0;j<19;j++)
-					board[i][j]=GameBoard[i][j];
-				vector<int> ways;
-				ways.clear();
-				if (dir!=RIGHT && locationY-1>=0 && GameBoard[locationX][locationY-1]!=WALL && (!isEdible || locationY <= pacman.locationCol || !inColRow())){
-					ways.push_back(LEFT);
-				}
-				if (dir!=LEFT && locationY+1<19 && GameBoard[locationX][locationY+1]!=WALL && (!isEdible || locationY >= pacman.locationCol || !inColRow())){
-					ways.push_back(RIGHT);
-				}
-				if (dir!=DOWN && locationX-1>=0 && GameBoard[locationX-1][locationY]!=WALL && (!isEdible || locationX <= pacman.locationRow || !inColRow())){
-					ways.push_back(UP);
-				}	
-				if (dir!=UP && locationX+1<22 && GameBoard[locationX+1][locationY]!=WALL&& (!isEdible || locationX >= pacman.locationRow || !inColRow())){
-					ways.push_back(DOWN);
-				}
-				int move;
-				srand(time(NULL));
-				if (ways.empty()){
-					move=(dir+2)%4;
-				}else
-				move = ways.at(rand()%ways.size());
+	void	*mover(int endx, int endy){
 
-				if (!isEdible){
-					if (style  == 0){
-						if (sqrt(pow(pacman.locationRow - locationX,2) + pow(pacman.locationCol - locationY,2) ) < 5+level)
-							move = solve(locationX, locationY, endx, endy, board);
-						else if (inColRow())
-							move = solve(locationX, locationY, endx, endy, board);
-					}else if (style == 1){
-						if (inColRow() )
-							move = solve(locationX, locationY, endx, endy, board);
+// check for if ghost is on pacman before movement
+				if (canDie)
+					die(*this);
+				int board[22][19];
+				for (int i=0;i<22;i++)
+					for (int j=0;j<19;j++)
+						board[i][j]=GameBoard[i][j];
+					vector<int> ways;
+					ways.clear();
+// check ways ghost can travel in cardinal directions except from backwards their movement
+					if (dir!=RIGHT && locationY-1>=0 && GameBoard[locationX][locationY-1]!=WALL && (!isEdible || locationY <= pacman.locationCol || !inColRow())){
+						ways.push_back(LEFT);
 					}
-				}
+					if (dir!=LEFT && locationY+1<19 && GameBoard[locationX][locationY+1]!=WALL && (!isEdible || locationY >= pacman.locationCol || !inColRow())){
+						ways.push_back(RIGHT);
+					}
+					if (dir!=DOWN && locationX-1>=0 && GameBoard[locationX-1][locationY]!=WALL && (!isEdible || locationX <= pacman.locationRow || !inColRow())){
+						ways.push_back(UP);
+					}	
+					if (dir!=UP && locationX+1<22 && GameBoard[locationX+1][locationY]!=WALL&& (!isEdible || locationX >= pacman.locationRow || !inColRow())){
+						ways.push_back(DOWN);
+					}
+
+// select a random move option from avaiable unless empty move backwards
+					int move;
+					srand(time(NULL));
+					if (ways.empty()){
+						move=(dir+2)%4;
+					}else
+					move = ways.at(rand()%ways.size());
+
+// style movement to pathfind if close or in the row or col of pacman.
+					if (!isEdible){
+						if (style  == 0){
+							if (sqrt(pow(pacman.locationRow - locationX,2) + pow(pacman.locationCol - locationY,2) ) < 5+level)
+								move = solve(locationX, locationY, endx, endy, board);
+							else if (inColRow())
+								move = solve(locationX, locationY, endx, endy, board);
+						}else if (style == 1){
+							if (inColRow() )
+								move = solve(locationX, locationY, endx, endy, board);
+						}
+					}
 			//cout<<move<<endl;
 			//up
 				if(move==0){
@@ -828,10 +810,10 @@ void Draw() {
 void Input() {
 	if (_kbhit()){
 		switch (_getch()) {
-		case 'n':
+		/*case 'n':
 			direction = NEW_GAME;
 			validInput = true;
-			break;
+			break;*/
 		case 'p':
 			direction = PAUSE;
 			validInput = true;
@@ -926,9 +908,9 @@ void Logic() {
 		}
 		
 		break;
-	case NEW_GAME:
+	/*case NEW_GAME:
 		gameOver = true;
-		break;
+		break;*/
 	case QUIT:
 		gameOver = true;
 		break;
@@ -944,35 +926,37 @@ void Logic() {
 				cout << "cin failed" << endl;
 			}
 			else {
-				if (input2.compare("raj") == 0){
+					if (input2.compare("raj") == 0){
+						cheatHap=true;
+						if (canDie)
+							canDie=false;
+						else
+							canDie=true;
+						input = 'r';
+					}else if (input2.compare("lev") == 0 && cheatHap==true){
+						int amount;
+						cin >> amount;
+						level += amount;
+						input ='r';
+					}else if (input2.compare("die") == 0 && cheatHap==true){
+						gameOver = true;
+					}
+					else{
+						input = input2.at(0);
+					}
+					switch (input) {
+						case 'r':
+						direction = HOLD;
+						validInput = true;
+						system("cls");
+						break;
+						default:
+						validInput = false;
+						break;
+					}
+				}
 
-					input = 32;
-				}else{
-					input = input2.at(0);
-				}
-				switch (input) {
-					case 'r':
-					direction = HOLD;
-					validInput = true;
-					system("cls");
-					break;
-					case 32:
-					direction = HOLD;
-					validInput = true;
-					cheatHap=true;
-					if (canDie)
-						canDie=false;
-					else
-						canDie=true;
-					system("cls");
-					break;
-					default:
-					validInput = false;
-					break;
-				}
 			}
-			
-		}
 		break;
 	case HOLD:
 		//cout << "Something went wrong" << endl;
@@ -1019,117 +1003,122 @@ int stoi(string line){
 }
 
 int main()
-{
-	
-	score=0;
-	string line;
-	vector<string> nameVect;
-	vector<int> scoreVect;
-	ifstream myFile("scoreBoard.txt");
-	if (!myFile) {
-		cerr << "Input file can not be opened" << endl;
-		exit(0);
-	}
-	string nextLine;
-	while (getline(myFile, line, '\n')) {
+	{
+
+		score=0;
+		string line;
+		vector<string> nameVect;
+		vector<int> scoreVect;
+		ifstream myFile("scoreBoard.txt");
+		if (!myFile) {
+			cerr << "Input file can not be opened" << endl;
+			exit(0);
+		}
+		string nextLine;
+		while (getline(myFile, line, '\n')) {
 		  //cout << "*" << line << "*" <<endl;
-		nameVect.push_back(line);
-		getline(myFile, line, '\n');
-		scoreVect.push_back(stoi(line));
-	}
-	myFile.close();
+			nameVect.push_back(line);
+			getline(myFile, line, '\n');
+			scoreVect.push_back(stoi(line));
+		}
+		myFile.close();
 
 
 
-	char input;
-	string input2;
-	do {
-		Setup();
-		while (gameOver == false)
-		{
+		char input;
+		string input2;
+		do {
+			Setup();
+			while (gameOver == false)
+			{
 
-			Input();
-			Logic();
-			clearScreen();
-			Draw();			
-			
-			if(gameOver == true && direction == WIN_GAME){
+				Input();
+				Logic();
+				clearScreen();
+				Draw();			
+
+				if(gameOver == true && direction == WIN_GAME){
 				/*
 				system("cls");
 				cout << "CONGRATULATIONS YOU WIN!" << endl;
 				*/
-				Sleep(1000);
-				level++;
-				gameOver=false;
-				direction=-1;
-				GameBoard[pacman.locationRow][pacman.locationCol] = DOT;
-				Setup();
-
-			}
-			else if(gameOver == true && direction == QUIT){
-				exit(0);
-			}
-			else if (gameOver == true && direction != NEW_GAME){
-				string playername;
-				system("cls");
-				cout << "GAME OVER!" << endl;
-				Sleep(1000);
-				cout << "Your Score: "<< score << endl;
-				Sleep(1000);
-				cout << "Your Name: ";
-				cin >> playername;
-				Sleep(1000);
-				if (!cheatHap){
-					for (int j=0; j<scoreVect.size();++j){
-						if (score>scoreVect.at(j)){
-							nameVect.insert(nameVect.begin()+j, playername);
-							scoreVect.insert(scoreVect.begin()+j, score);
-							break;
-						}
-					}
-
-					myFile.close();
-					ofstream myOutFile("scoreBoard.txt");
-					if (!myOutFile) {
-						cerr << "Output file can not be opened" << endl;
-						exit(0);
-					}
-					for (int i=0; i<7; i++) {
-						myOutFile << nameVect.at(i)<<endl;
-						myOutFile << scoreVect.at(i)<<endl;
-					}
-					myOutFile.close();
-				}
-				// print high score list
-				for (int n=0; n<7;++n){
-					cout<< nameVect.at(n)<<" "<<scoreVect.at(n)<<endl;
-				}
-				Sleep(1000);
-
-				cout << endl;
-				cout << "Do you want to play another game?" << endl;
-				cout << "Press y to play again..." << endl;
-				cin >> input;
-				if (input == 'y') {
-					live = 3;
-					cheatHap=false;
-					canDie=true;
-					direction = -1;
-					gameOver = false;
+					Sleep(1000);
+					level++;
+					gameOver=false;
+					direction=-1;
 					GameBoard[pacman.locationRow][pacman.locationCol] = DOT;
-					score=0;
 					Setup();
+
 				}
-				else {
-					leavegame = true;
+				else if(gameOver == true && direction == QUIT){
+					exit(0);
 				}
+				else if (gameOver == true /*&& direction != NEW_GAME*/){
+					string playername;
+					system("cls");
+					cout << "GAME OVER!" << endl;
+					Sleep(1000);
+					cout << "Your Score: "<< score << endl;
+					Sleep(1000);
+					cout << "Your Name: ";
+					cin >> playername;
+					Sleep(1000);
+					cout<<"\n HIGH SCORES:"<<endl;
+					if (!cheatHap){
+						for (int j=0; j<scoreVect.size();++j){
+							if (score>scoreVect.at(j)){
+								nameVect.insert(nameVect.begin()+j, playername);
+								scoreVect.insert(scoreVect.begin()+j, score);
+								break;
+							}
+						}
+
+						myFile.close();
+						ofstream myOutFile("scoreBoard.txt");
+						cout<<"\nHIGH SCORES:"<<endl;
+						if (!myOutFile) {
+							cerr << "Output file can not be opened" << endl;
+							exit(0);
+						}
+						for (int i=0; i<7; i++) {
+							myOutFile << nameVect.at(i)<<endl;
+							myOutFile << scoreVect.at(i)<<endl;
+						}
+						myOutFile.close();
+					}
+				// print high score list
+					for (int n=0; n<7;++n){
+						cout<< nameVect.at(n)<<" "<<scoreVect.at(n)<<endl;
+					}
+					Sleep(1000);
+
+					cout << endl;
+					if (cheatHap)
+					cout<< "You cheated...";
+					cout << "Do you want to play another game?" << endl;
+					cout << "Press y to play again..." << endl;
+					cin >> input;
+					if (input == 'y') {
+						live = 3;
+						cheatHap=false;
+						canDie=true;
+						direction = -1;
+						gameOver = false;
+						GameBoard[pacman.locationRow][pacman.locationCol] = DOT;
+						score=0;
+						system("cls");
+						Setup();
+					}
+					else {
+						leavegame = true;
+					}
+				}
+
+
 			}
 
-			
-		}
-		
 
-	} while (!leavegame);
+		} while (!leavegame);
 
-	return 0;
-}
+		return 0;
+	}
